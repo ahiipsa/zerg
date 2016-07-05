@@ -30,7 +30,7 @@ var codes = {
     bgWhite: [47, 49]
 };
 
-var styles = [];
+var styles = {codes: codes};
 
 Object.keys(codes).forEach(function (key) {
     var open = `\u001b[${codes[key][0]}m`;

@@ -2,9 +2,13 @@ var describe = require('mocha').describe;
 var before = require('mocha').before;
 var it = require('mocha').it;
 var assert = require('chai').assert;
+var spies = require('chai-spies');
+var chai = require('chai');
+chai.use(spies);
+chai.should();
 
 var logger = require('../src/index.js');
-var transportConsole = require('../src/transport');
+var consoleTransport = require('../src/transport/console');
 
 var units = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',
@@ -62,6 +66,28 @@ describe('logger', function () {
 
         logger.use(transport);
         changeling.info('message from changeling', false, "string", 1, [], {foo: 'bar'}, fn);
+    });
+
+    it('console styles', function () {
+        let codes = consoleTransport.styles.codes;
+        let consoleStyles = consoleTransport.styles;
+
+        for (let styleKey in codes) {
+            let codeOpen = codes[styleKey][0];
+            let codeClose = codes[styleKey][1];
+
+            assert.equal(consoleStyles[styleKey](styleKey), `\u001b[${codeOpen}m${styleKey}\u001b[${codeClose}m`);
+        }
+    });
+
+    it('console transport', function () {
+        let transport = chai.spy(consoleTransport.handler);
+
+        logger.use(transport);
+        let zergling = logger.create('zergling');
+        zergling.info('some string', 0, true);
+
+        transport.should.have.been.called.once;
     });
 
 });
