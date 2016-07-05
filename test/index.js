@@ -4,6 +4,7 @@ var it = require('mocha').it;
 var assert = require('chai').assert;
 
 var logger = require('../src/index.js');
+var transportConsole = require('../src/transport');
 
 var units = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',
