@@ -46,6 +46,9 @@ class Logger {
 
 
     use(callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('use: callback must be a function');
+        }
         __subscribers.push(callback);
     };
 
