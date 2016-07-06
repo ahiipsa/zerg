@@ -44,9 +44,9 @@ Object.keys(codes).forEach(function (key) {
 });
 
 var map = {
-    debug: styles.magenta,
+    debug: styles.cyan,
     error: styles.red,
-    info: styles.blue,
+    info: styles.green,
     warn: styles.yellow
 };
 
