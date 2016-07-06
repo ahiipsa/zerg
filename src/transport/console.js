@@ -56,4 +56,6 @@ var handler = function (event) {
     console.log.apply(console, args);
 };
 
-module.exports = {styles, handler};
+handler.styles = styles;
+
+module.exports = handler;

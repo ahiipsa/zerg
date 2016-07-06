@@ -8,7 +8,7 @@ chai.use(spies);
 chai.should();
 
 var logger = require('../src/index.js');
-var consoleTransport = require('../src/transport/console');
+var transport = require('../src/transport');
 
 var units = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',
@@ -69,25 +69,25 @@ describe('logger', function () {
     });
 
     it('console styles', function () {
-        let codes = consoleTransport.styles.codes;
-        let consoleStyles = consoleTransport.styles;
+        let codes = transport.console.styles.codes;
+        let styles = transport.console.styles;
 
         for (let styleKey in codes) {
             let codeOpen = codes[styleKey][0];
             let codeClose = codes[styleKey][1];
 
-            assert.equal(consoleStyles[styleKey](styleKey), `\u001b[${codeOpen}m${styleKey}\u001b[${codeClose}m`);
+            assert.equal(styles[styleKey](styleKey), `\u001b[${codeOpen}m${styleKey}\u001b[${codeClose}m`);
         }
     });
 
     it('console transport', function () {
-        let transport = chai.spy(consoleTransport.handler);
+        let consoleTransport = chai.spy(transport.console);
 
-        logger.use(transport);
+        logger.use(consoleTransport);
         let zergling = logger.create('zergling');
         zergling.info('some string', 0, true);
 
-        transport.should.have.been.called.once;
+        consoleTransport.should.have.been.called.once;
     });
 
 });
