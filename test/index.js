@@ -69,10 +69,10 @@ describe('logger', function () {
     });
 
     it('console styles', function () {
-        let codes = transport.console.styles.codes;
+        let codes = transport.console.codes;
         let styles = transport.console.styles;
 
-        for (let styleKey in codes) {
+        for (let styleKey in styles) {
             let codeOpen = codes[styleKey][0];
             let codeClose = codes[styleKey][1];
 

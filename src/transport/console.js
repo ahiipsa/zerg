@@ -30,7 +30,7 @@ var codes = {
     bgWhite: [47, 49]
 };
 
-var styles = {codes: codes};
+var styles = {};
 
 Object.keys(codes).forEach(function (key) {
     var open = `\u001b[${codes[key][0]}m`;
@@ -44,6 +44,7 @@ Object.keys(codes).forEach(function (key) {
 });
 
 var map = {
+    debug: styles.magenta,
     error: styles.red,
     info: styles.blue,
     warn: styles.yellow
@@ -57,5 +58,6 @@ var handler = function (event) {
 };
 
 handler.styles = styles;
+handler.codes = codes;
 
 module.exports = handler;

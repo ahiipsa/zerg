@@ -83,6 +83,7 @@ class Logger {
 }
 
 const levels = {
+    'debug': {},
     'info': {},
     'warn': {},
     'error': {}
