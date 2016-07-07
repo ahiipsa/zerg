@@ -1,10 +1,11 @@
 var describe = require('mocha').describe;
-var before = require('mocha').before;
 var it = require('mocha').it;
 var assert = require('chai').assert;
-var spies = require('chai-spies');
 var chai = require('chai');
-chai.use(spies);
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+
+chai.use(sinonChai);
 chai.should();
 
 var logger = require('../src/index.js');
@@ -18,6 +19,14 @@ var units = [
 ];
 
 describe('logger', function () {
+
+    beforeEach(function () {
+        sinon.spy(console, 'log');
+    });
+
+    afterEach(function () {
+        console.log.restore();
+    });
 
     it('create log', function () {
         var drone = logger.create('drone');
@@ -81,13 +90,15 @@ describe('logger', function () {
     });
 
     it('console transport', function () {
-        let consoleTransport = chai.spy(transport.console);
+        logger.use(transport.console);
 
-        logger.use(consoleTransport);
         let zergling = logger.create('zergling');
         zergling.info('some string', 0, true);
 
-        consoleTransport.should.have.been.called.once;
+        let styles = transport.console.styles;
+        let _message = styles.green('[info][zergling]') + ' some string';
+
+        console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
     });
 
 });

@@ -52,7 +52,7 @@ var map = {
 
 var handler = function (event) {
     let style = map[event.level];
-    let message = style(`[${event.level}][${event.name}] `) + event.message;
+    let message = style(`[${event.level}][${event.name}]`) + ' ' + event.message;
     let args = [message].concat(event.arguments);
     console.log.apply(console, args);
 };
