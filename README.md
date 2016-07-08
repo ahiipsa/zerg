@@ -1,8 +1,5 @@
 # Zerg
 
-lightweight logging library
-
-
 ## Futures
 
 - modularity 
@@ -12,6 +9,11 @@ lightweight logging library
 
 ## Getting started
 
+### Install
+
+`npm i --save zerg`
+
+### Setup
 
 ```js
 
@@ -28,5 +30,55 @@ log.debug('log debug message');
 log.info('log info message', 10);
 log.warn('log warn message', false);
 log.error('log error message', {message: 'something wrong'});
+
+```
+
+
+### Custom transport
+
+
+Simple example for preview data format:
+
+```js
+
+var zerg = require('zerg');
+var log = zerg.create('mySupperModule');
+
+zerg.use(function (logObject) {
+
+    console.dir(logObject);
+    
+});
+
+```
+
+result:
+
+```js
+
+{
+    timestamp: 1467967421933,
+    level: 'info',
+    name: 'mySuperModule',
+    message: 'create staff',
+    arguments: [ true, 1, [ 'array' ], { foo: 'bar' } ]
+}
+
+```
+
+You can create your self transport for level, modules, environments
+when is needed:
+
+```js
+
+zerg.use(function (logObject) {
+    if(NODE_ENV === 'production' && logObject.level === 'error') {
+        // write to file
+    } else if (NOVE_ENV !== 'production') {
+        // write to console
+    }
+});
+
+log.info('create staff', {foo: 'bar'});
 
 ```

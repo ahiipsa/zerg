@@ -1,11 +1,30 @@
 {
   "name": "zerg",
   "version": "1.0.2",
-  "description": "small log lib",
+  "description": "lightweight logging library",
+  "keywords": [
+    "log",
+    "logging",
+    "debug",
+    "debugger",
+    "lightweight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahiipsa/zerg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahiipsa/zerg/issues"
+  },
   "main": "src/index.js",
   "directories": {
-    "src": "src"
+    "src": "src",
+    "example": "example"
   },
+  "files": [
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
