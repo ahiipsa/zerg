@@ -1,0 +1,8 @@
+.idea
+.DS_Store
+node_modules
+bower_components
+test.js
+config/local.json
+npm-debug.log
+coverage
