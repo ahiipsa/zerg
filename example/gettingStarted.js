@@ -1,3 +1,5 @@
+'use strict';
+
 // setup
 var zerg = require('zerg');
 var transport = require('zerg/transport');

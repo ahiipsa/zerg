@@ -1,3 +1,5 @@
+'use strict';
+
 var zerg = require('zerg');
 var log = zerg.create('mySupperModule');
 

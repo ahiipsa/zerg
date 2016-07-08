@@ -1,3 +1,5 @@
+'use strict';
+
 let loggerInst = null;
 let __logs = {};
 let __subscribers = [];

@@ -228,10 +228,7 @@
         "space-infix-ops": "error",
         "space-unary-ops": "error",
         "spaced-comment": "error",
-        "strict": [
-            "error",
-            "never"
-        ],
+        "strict": "error",
         "template-curly-spacing": [
             "error",
             "never"

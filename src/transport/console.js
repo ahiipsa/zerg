@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint no-console: "off" */
 
 var codes = {

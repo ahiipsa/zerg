@@ -1,3 +1,5 @@
+'use strict';
+
 /* eslint no-console: "off", no-empty-function: "off" */
 
 var afterEach = require('mocha').afterEach,
