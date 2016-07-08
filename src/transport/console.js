@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 var codes = {
     reset: [0, 0],
 

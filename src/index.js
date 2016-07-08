@@ -10,7 +10,7 @@ class Logger {
         }
 
         loggerInst = this;
-    };
+    }
 
 
     create(loggerName) {
@@ -23,12 +23,12 @@ class Logger {
         }
 
         return log;
-    };
+    }
 
 
     getLog(logName) {
         return __logs[logName] || false;
-    };
+    }
 
 
     addLog(log) {
@@ -37,12 +37,12 @@ class Logger {
         }
 
         __logs[log.name] = log;
-    };
+    }
 
 
     getLogs() {
         return __logs;
-    };
+    }
 
 
     use(callback) {
@@ -50,7 +50,7 @@ class Logger {
             throw new Error('use: callback must be a function');
         }
         __subscribers.push(callback);
-    };
+    }
 
 
     removeSubscriber(callback) {
@@ -58,14 +58,14 @@ class Logger {
         if (index !== -1) {
             __subscribers.splice(index, 1);
         }
-    };
+    }
 
 
     __emit(logInfo) {
         for (var i = 0; i < __subscribers.length; i++) {
             __subscribers[i](logInfo);
         }
-    };
+    }
 
 
     __log(moduleName, level, message, args) {
@@ -78,7 +78,7 @@ class Logger {
         };
 
         this.__emit(logObject);
-    };
+    }
 
 }
 
@@ -101,7 +101,7 @@ class Log {
                 }
             }
         }
-    };
+    }
 }
 
 module.exports = new Logger();

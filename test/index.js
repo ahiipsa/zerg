@@ -1,9 +1,13 @@
-var describe = require('mocha').describe;
-var it = require('mocha').it;
-var assert = require('chai').assert;
-var chai = require('chai');
-var sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+/* eslint no-console: "off", no-empty-function: "off" */
+
+var afterEach = require('mocha').afterEach,
+    assert = require('chai').assert,
+    beforeEach = require('mocha').beforeEach,
+    chai = require('chai'),
+    describe = require('mocha').describe,
+    it = require('mocha').it,
+    sinon = require('sinon'),
+    sinonChai = require('sinon-chai');
 
 chai.use(sinonChai);
 chai.should();
@@ -11,12 +15,14 @@ chai.should();
 var logger = require('../src/index.js');
 var transport = require('../src/transport');
 
+/*
 var units = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',
     'lurker', 'swarm host', 'locust', 'queen', 'mutalisk', 'guardian', 'devourer', 'corruptor', 'brood lord', 'viper',
     'scourge', 'defiler', 'queen', 'infestor', 'ultralisk', 'omegalisk', 'pigalisk', 'brutalisk', 'leviathan',
     'broodling', 'infested terran', 'infested colonist', 'infested marine', 'aberration'
 ];
+*/
 
 describe('logger', function () {
 
@@ -59,12 +65,12 @@ describe('logger', function () {
 
     it('arguments', function (done) {
         var changeling = logger.create('changeling');
-        var fn = function(){};
+        var fn = function () {};
         var transport = function (msg) {
             assert.equal(msg.message, 'message from changeling');
             assert.lengthOf(msg.arguments, 6);
             assert.equal(msg.arguments[0], false);
-            assert.equal(msg.arguments[1], "string");
+            assert.equal(msg.arguments[1], 'string');
             assert.equal(msg.arguments[2], 1);
             assert.isArray(msg.arguments[3]);
             assert.deepEqual(msg.arguments[4], {foo: 'bar'});
@@ -74,7 +80,7 @@ describe('logger', function () {
         };
 
         logger.use(transport);
-        changeling.info('message from changeling', false, "string", 1, [], {foo: 'bar'}, fn);
+        changeling.info('message from changeling', false, 'string', 1, [], {foo: 'bar'}, fn);
     });
 
     it('console styles', function () {
