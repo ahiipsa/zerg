@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/ahiipsa/zerg.svg?branch=master)](https://travis-ci.org/ahiipsa/zerg)
 [![Coverage Status](https://coveralls.io/repos/github/ahiipsa/zerg/badge.svg?branch=master)](https://coveralls.io/github/ahiipsa/zerg?branch=master)
+[![npm version](https://badge.fury.io/js/zerg.svg)](https://badge.fury.io/js/zerg)
 
 # Zerg
 
