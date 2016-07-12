@@ -24,19 +24,23 @@
 
 // setup
 var zerg = require('zerg');
-var transport = require('zerg/transport');
+var transport = require('zerg/src/transport');
 zerg.use(transport.console);
 
 // create log function for module
 var log = zerg.create('myAppModule');
 
-
+// usage
 log.debug('log debug message');
 log.info('log info message', 10);
 log.warn('log warn message', false);
 log.error('log error message', {message: 'something wrong'});
 
 ```
+
+result:
+
+![ScreenShot](https://raw.github.com/ahiipsa/zerg/master/example/example.png)
 
 
 ### Custom transport
