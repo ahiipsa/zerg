@@ -28,7 +28,6 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
-  "readme": "README.md",
   "author": "Sergey Karasev<ahiipsa@gmail.com>",
   "license": "MIT",
   "devDependencies": {
