@@ -55,6 +55,8 @@ zerg.use(function (logObject) {
     
 });
 
+log.info('create staff', true, 1, ['array'], {foo: 'bar'});
+
 ```
 
 result:

@@ -7,4 +7,4 @@ zerg.use(function (logObject) {
     console.dir(logObject);
 });
 
-log.info('create staff', {foo: 'bar'});
+log.info('create staff', true, 1, ['array'], {foo: 'bar'});
