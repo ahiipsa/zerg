@@ -7,10 +7,6 @@ let __subscribers = [];
 class Logger {
 
     constructor() {
-        if (loggerInst) {
-            return loggerInst;
-        }
-
         loggerInst = this;
     }
 
@@ -19,7 +15,7 @@ class Logger {
         let log = this.getLog(loggerName);
         if (log === false) {
             log = new Log(loggerName);
-            this.addLog(log);
+            this.__addLog(log);
         } else {
             log = this.getLog(loggerName);
         }
@@ -33,11 +29,7 @@ class Logger {
     }
 
 
-    addLog(log) {
-        if (this.getLog(log.name) !== false) {
-            throw new Error(`log ${log.name} exist`);
-        }
-
+    __addLog(log) {
         __logs[log.name] = log;
     }
 
@@ -98,9 +90,7 @@ class Log {
         for (let level in levels) {
             this[level] = function (message) {
                 var args = Array.prototype.slice.call(arguments, 1);
-                if (loggerInst !== null) {
-                    loggerInst.__log(this.name, level, message, args);
-                }
+                loggerInst.__log(this.name, level, message, args);
             }
         }
     }
