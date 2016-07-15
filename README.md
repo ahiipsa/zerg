@@ -42,7 +42,6 @@ result:
 
 ![ScreenShot](https://raw.github.com/ahiipsa/zerg/master/example/example.png)
 
-
 ### Custom transport
 
 
@@ -91,5 +90,52 @@ zerg.use(function (logObject) {
 });
 
 log.info('create staff', {foo: 'bar'});
+
+```
+
+
+## Transports
+
+zerg have some inbox transport 
+
+## Console
+
+### Setup
+
+```js
+
+// bootstrap.js
+
+var zerg = require('zerg');
+var transport = require('zerg/src/transport');
+zerg.use(transport.console);
+
+```
+
+### Disable module
+
+you can disable some log by module name, example:
+
+```js
+
+// bootstrap.js
+var zerg = require('zerg');
+var transport = require('zerg/src/transport');
+zerg.use(transport.console);
+
+// disable log for api
+transport.console.disable(['api']);
+// or use wildcard
+transport.console.disable(['api*']);
+
+
+// src/api.js
+var zerg = require('zerg');
+var log = zerg.create('api');
+
+
+// src/db.js
+var zerg = require('zerg');
+var log = zerg.create('db');
 
 ```
