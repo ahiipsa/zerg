@@ -54,14 +54,36 @@ var map = {
     warn: styles.yellow
 };
 
+var validate = false;
+
 var handler = function (event) {
+    if (validate && validate.test(event.name)) {
+        return;
+    }
+
     let style = map[event.level];
     let message = style(`[${event.level}][${event.name}]`) + ' ' + event.message;
     let args = [message].concat(event.arguments);
     console.log.apply(console, args);
 };
 
+var disable = function (modules) {
+    let result = [];
+
+    // build
+    for (let i = 0; i < modules.length; i++) {
+        let moduleName = modules[i];
+        // moduleName* to regexp: moduleName[\w\W]*
+        moduleName = moduleName.replace('*', '[\\w\\W]*');
+        result.push(moduleName);
+    }
+
+    // save for usage ^(a|b[\w\W]*|c)
+    validate = new RegExp(`^(${result.join('|')})$`);
+};
+
 handler.styles = styles;
 handler.codes = codes;
+handler.disable = disable;
 
 module.exports = handler;
