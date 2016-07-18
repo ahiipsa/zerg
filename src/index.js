@@ -1,16 +1,51 @@
 'use strict';
 
+/**
+ * @type {Zerg}
+ */
 let loggerInst = null;
+
+/**
+ * @type {Object.<Log>}
+ * @private
+ */
 let __logs = {};
+
+/**
+ * @type {array<Log>}
+ * @private
+ */
 let __subscribers = [];
 
-class Logger {
+
+/**
+ * @typedef {object} LogObject
+ * @property {number} timestamp Time of create log event
+ * @property {string} level Level of event
+ * @property {string} name Module name with send log event
+ * @property {string} message Message of log event
+ * @property {array<any>} event.arguments Extended info
+ */
+
+
+/**
+ * @callback transportCallback
+ * @return {undefined}
+ */
+
+
+class Zerg {
 
     constructor() {
         loggerInst = this;
     }
 
 
+    /**
+     * Create named Log instance
+     * @param {string} loggerName - Name for log function
+     * @return {Log} - Instance Log function
+     */
     create(loggerName) {
         let log = this.getLog(loggerName);
         if (log === false) {
@@ -39,6 +74,10 @@ class Logger {
     }
 
 
+    /**
+     * @param {transportCallback} callback - Function for custom transport
+     * @return {undefined}
+     */
     use(callback) {
         if (typeof callback !== 'function') {
             throw new Error('use: callback must be a function');
@@ -47,6 +86,10 @@ class Logger {
     }
 
 
+    /**
+     * @param {function} callback - Function with transport
+     * @return {undefined}
+     */
     removeSubscriber(callback) {
         let index = __subscribers.indexOf(callback);
         if (index !== -1) {
@@ -55,6 +98,12 @@ class Logger {
     }
 
 
+    /**
+     * Propagation event for transport
+     * @param {LogObject} logInfo - Just LogObject
+     * @private
+     * @return {undefined}
+     */
     __emit(logInfo) {
         for (var i = 0; i < __subscribers.length; i++) {
             __subscribers[i](logInfo);
@@ -62,6 +111,15 @@ class Logger {
     }
 
 
+    /**
+     * Master function creating LogObject
+     * @param {string} moduleName - Log module name
+     * @param {string} level - Level of log
+     * @param {name} message - Message of log
+     * @param {array<any>} args - Extended info
+     * @private
+     * @return {undefined}
+     */
     __log(moduleName, level, message, args) {
         let logObject = {
             timestamp: Date.now(),
@@ -76,24 +134,22 @@ class Logger {
 
 }
 
-const levels = {
-    'debug': {},
-    'info': {},
-    'warn': {},
-    'error': {}
-};
+const levels = ['debug', 'info', 'warn', 'error'];
 
+/**
+ * Zerg module
+ */
 class Log {
     constructor(loggerName) {
         this.name = loggerName;
 
-        for (let level in levels) {
+        levels.forEach((level) => {
             this[level] = function (message) {
                 var args = Array.prototype.slice.call(arguments, 1);
                 loggerInst.__log(this.name, level, message, args);
             }
-        }
+        });
     }
 }
 
-module.exports = new Logger();
+module.exports = new Zerg();
