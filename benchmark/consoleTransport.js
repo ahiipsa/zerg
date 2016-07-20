@@ -1,3 +1,7 @@
+'use strict';
+
+/* eslint no-console: "off", no-empty-function: "off" */
+
 var zerg = require('../src');
 var transport = require('../src/transport');
 
@@ -27,28 +31,48 @@ logs.push(zerg.create('benchmark:v3'));
 
 const CYCLES = 1000000;
 var results = [];
-var stat = 0;
 
 // disable console.log
 var originConsoleLog = console.log;
 console.log = function () {};
 
 for (var k = 0; k < CYCLES; k++) {
-    let log = logs[ Math.floor(Math.random() * logs.length) ];
+    let log = logs[Math.floor(Math.random() * logs.length)];
     let start = process.hrtime();
 
     log.info(`${log.name} message`, 1, true);
 
     let diff = process.hrtime(start);
 
-    results.push(diff);
+    results.push(diff[0] * 1e9 + diff[1]);
 }
 
 // enable console.log
 console.log = originConsoleLog;
 
+var stat = {
+    sum: null,
+    avg: null,
+    min: null,
+    max: null
+};
+
+// sum
 results.forEach(function (val) {
-    stat += val[0] * 1e9 + val[1];
+    stat.sum += val;
 });
 
-console.log('avg', stat / results.length);
+// min / max
+results.forEach((val) => {
+    if (stat.min === null || val < stat.min) {
+        stat.min = val;
+    }
+
+    if (stat.max === null || val > stat.max) {
+        stat.max = val;
+    }
+});
+
+stat.avg = Math.round(stat.sum / results.length);
+
+console.log('avg', stat);
