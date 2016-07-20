@@ -1,6 +1,7 @@
 'use strict';
 
-/* eslint no-console: "off", no-empty-function: "off", global-require: "off" */
+/* eslint no-console: "off", no-empty-function: "off", global-require: "off", no-unused-expressions
+: off */
 
 var afterEach = require('mocha').afterEach,
     assert = require('chai').assert,
@@ -130,7 +131,7 @@ describe('logger', function () {
 
         beforeEach(function () {
             sinon.spy(console, 'log');
-            transport.console.disable([]);
+            transport.console.enable([]);
             logger.use(transport.console);
         });
 
@@ -150,8 +151,8 @@ describe('logger', function () {
             logger.removeSubscriber(transport.console);
         });
 
-        it('disable/enable', function () {
-            transport.console.disable(['baneling']);
+        it('disable', function () {
+            transport.console.enable(['-baneling']);
 
             let styles = transport.console.styles;
             let baneling = logger.create('baneling');
@@ -160,7 +161,7 @@ describe('logger', function () {
 
             console.log.should.not.have.been.calledWith(_message);
 
-            transport.console.disable([]);
+            transport.console.enable([]);
 
             baneling.info('some string');
 
@@ -168,20 +169,45 @@ describe('logger', function () {
         });
 
         it('disable with wildcard', function () {
-            transport.console.disable(['roach*']);
+            transport.console.enable(['-roach*']);
 
-            let styles = transport.console.styles;
             let roach = logger.create('roach:v1');
-            let _message = styles.green('[info][roach:v1]') + ' some string';
             roach.info('some string');
 
+            let styles = transport.console.styles;
+            let _message = styles.green('[info][roach:v1]') + ' some string';
             console.log.should.not.have.been.calledWith(_message);
 
-            transport.console.disable([]);
+            transport.console.enable([]);
 
             roach.info('some string');
 
             console.log.should.have.been.calledWith(_message);
+        });
+
+        it('enable', function () {
+            transport.console.enable(['hydralisk']);
+
+            logger.create('hydralisk').info('some string');
+            logger.create('swarm host').info('swarm host here');
+            logger.create('locust').info('locust logging');
+
+            let styles = transport.console.styles;
+            let _message = styles.green('[info][hydralisk]') + ' some string';
+            console.log.should.have.been.calledOnce.calledWith(_message);
+        });
+
+        it('enable with wildcard', function () {
+            transport.console.enable(['queen*']);
+
+            logger.create('queen:1').info('some string');
+            logger.create('queen:2').info('some string');
+            logger.create('queen:3').info('some string');
+
+            logger.create('swarm host').info('swarm host here');
+            logger.create('locust').info('locust logging');
+
+            console.log.should.have.been.calledThrice;
         });
 
     });

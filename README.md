@@ -112,7 +112,7 @@ zerg.use(transport.console);
 
 ```
 
-### Disable module
+### Enable/Disable module
 
 you can disable some log by module name, example:
 
@@ -123,11 +123,19 @@ var zerg = require('zerg');
 var transport = require('zerg/src/transport');
 zerg.use(transport.console);
 
-// disable log for api
-transport.console.disable(['api']);
-// or use wildcard
-transport.console.disable(['api*']);
+// enable log only for api
+transport.console.enable(['api']);
 
+// or use wildcard 
+transport.console.enable(['api*']);
+
+// disable log for api
+transport.console.enable(['-api']);
+// or use wildcard
+transport.console.enable(['-api*']);
+
+// combination
+transport.console.enable(['perfix:*', 'api', '-db', '-http']);
 
 // src/api.js
 var zerg = require('zerg');

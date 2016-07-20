@@ -1,6 +1,7 @@
 'use strict';
+var util = require('util');
 
-/* eslint no-console: "off" */
+/* eslint no-console: "off", max-statements: ["error", 13] */
 
 var codes = {
     reset: [0, 0],
@@ -30,45 +31,64 @@ var map = {
     warn: styles.yellow
 };
 
-var validate = false;
+var moduleEnable = false;
+var moduleDisable = false;
+
 
 /**
- * @param {LogObject} event Object of log event
- * @return {undefined}
+ * Enable/Disable module in console.log
+ * @param {Array<string>} modules - List of modules to disable
+ * @return {void}
  */
-var handler = function (event) {
-    if (validate && validate.test(event.name)) {
-        return;
+var enable = function (modules) {
+    moduleEnable = false;
+    moduleDisable = false;
+
+    let disabled = [];
+    let enabled = [];
+    for (let i = 0; i < modules.length; i++) {
+        let moduleName = modules[i];
+
+        if (moduleName.indexOf('-') === 0) {
+            disabled.push(moduleName.slice(1).replace('*', '[\\w\\W]*'));
+        } else {
+            enabled.push(moduleName.replace('*', '[\\w\\W]*'));
+        }
     }
 
-    let style = map[event.level];
-    let message = style(`[${event.level}][${event.name}]`) + ' ' + event.message;
-    let args = [message].concat(event.arguments);
-    console.log.apply(console, args);
+    if (enabled.length > 0) {
+        moduleEnable = new RegExp(`^(${enabled.join('|')})$`);
+    }
+
+    if (disabled.length > 0) {
+        moduleDisable = new RegExp(`^(${disabled.join('|')})$`);
+    }
 };
 
 /**
- * Disable module in console.log
- * @param {array<string>} modules List of modules to disable
- * @return {undefined}
+ * @param {LogObject} logObject Object of log event
+ * @return {void}
  */
-var disable = function (modules) {
-    let result = [];
-
-    // build
-    for (let i = 0; i < modules.length; i++) {
-        let moduleName = modules[i];
-        // moduleName* to regexp: moduleName[\w\W]*
-        moduleName = moduleName.replace('*', '[\\w\\W]*');
-        result.push(moduleName);
+var handler = function (logObject) {
+    if (moduleEnable && !moduleEnable.test(logObject.name)) {
+        return;
     }
 
-    // save for usage ^(a|b[\w\W]*|c)
-    validate = new RegExp(`^(${result.join('|')})$`);
+    if (moduleDisable && moduleDisable.test(logObject.name)) {
+        return;
+    }
+
+    let style = map[logObject.level];
+    let message = style(`[${logObject.level}][${logObject.name}]`) + ' ' + logObject.message;
+    let args = [message].concat(logObject.arguments);
+    console.log.apply(console, args);
 };
 
 handler.styles = styles;
 handler.codes = codes;
-handler.disable = disable;
+handler.disable = util.deprecate(() => {
+    console.log('ERROR: zerg.disable: use zerg.enable');
+}, 'zerg.disable: use zerg.enable');
+handler.enable = enable;
 
 module.exports = handler;

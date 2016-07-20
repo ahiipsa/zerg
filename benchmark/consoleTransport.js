@@ -8,8 +8,8 @@ var demos = [
     'broodling', 'infested terran', 'infested colonist', 'infested marine', 'aberration'
 ];
 
-transport.console.disable(demos.map(function (val) {
-    return val + '*'
+transport.console.enable(demos.map(function (val) {
+    return '-' + val + '*'
 }));
 
 zerg.use(transport.console);
