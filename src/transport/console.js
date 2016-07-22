@@ -1,7 +1,6 @@
 'use strict';
-var util = require('util');
 
-/* eslint no-console: "off", max-statements: ["error", 13] */
+/* eslint no-console: "off", max-statements: ["error", 13], no-process-env: "off" */
 
 var codes = {
     reset: [0, 0],
@@ -34,7 +33,6 @@ var map = {
 var moduleEnable = false;
 var moduleDisable = false;
 
-
 /**
  * Enable/Disable module in console.log
  * @param {Array<string>} modules - List of modules to disable
@@ -66,6 +64,15 @@ var enable = function (modules) {
 };
 
 /**
+ * Enable module from process.env.DEBUG and compatibility with npm "debug" package
+ */
+if (process.env.DEBUG) {
+    let debug = process.env.DEBUG;
+    let modules = debug.split(',').map((item) => item.trim());
+    enable(modules);
+}
+
+/**
  * @param {LogObject} logObject Object of log event
  * @return {void}
  */
@@ -86,9 +93,6 @@ var handler = function (logObject) {
 
 handler.styles = styles;
 handler.codes = codes;
-handler.disable = util.deprecate(() => {
-    console.log('ERROR: zerg.disable: use zerg.enable');
-}, 'zerg.disable: use zerg.enable');
 handler.enable = enable;
 
 module.exports = handler;
