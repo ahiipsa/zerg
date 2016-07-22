@@ -10,13 +10,12 @@ var afterEach = require('mocha').afterEach,
     describe = require('mocha').describe,
     it = require('mocha').it,
     sinon = require('sinon'),
-    sinonChai = require('sinon-chai');
+    sinonChai = require('sinon-chai'),
+    transport = require('../src/transport'),
+    zerg = require('../src/index.js');
 
 chai.use(sinonChai);
 chai.should();
-
-var zerg = require('../src/index.js');
-var transport = require('../src/transport');
 
 /*
 var units = [
