@@ -147,3 +147,10 @@ var zerg = require('zerg');
 var log = zerg.create('db');
 
 ```
+
+also enable/disable module from **DEBUG** environment variable
+(as package [debug](https://www.npmjs.com/package/debug#wildcards)) 
+
+```js
+DEBUG="perfix:*,api,-db,-http" node app.js
+```
