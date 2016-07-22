@@ -5,6 +5,8 @@
 
 # Zerg
 
+lightweight logging library for apps and libs
+
 ## Futures
 
 - modularity 
