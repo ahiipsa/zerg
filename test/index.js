@@ -1,7 +1,10 @@
 'use strict';
 
 /* eslint no-console: "off", no-empty-function: "off", global-require: "off", no-unused-expressions
-: off */
+: off, no-process-env: "off"*/
+
+// for test transport.console
+process.env.DEBUG = 'drone,-overlord,overseer*,-changeling*';
 
 var afterEach = require('mocha').afterEach,
     assert = require('chai').assert,
@@ -130,7 +133,6 @@ describe('logger', function () {
 
         beforeEach(function () {
             sinon.spy(console, 'log');
-            transport.console.enable([]);
             zerg.use(transport.console);
         });
 
@@ -139,7 +141,23 @@ describe('logger', function () {
             console.log.restore();
         });
 
+        it('disable from DEBUG env variable', function () {
+            // process.env.DEBUG = 'drone,-overlord,overseer*,-changeling*';
+            zerg.create('drone').info('drone enable');
+            zerg.create('overseer:terran').info('overseer:terran enable');
+
+            zerg.create('overlord').info('overlord disable');
+            zerg.create('changeling:colonist').info('colonist:colonist disable');
+
+            console.log.should.have.been.calledTwice;
+            console.log.should.have.been.calledWithMatch(sinon.match(/drone enable/));
+            console.log.should.have.been.calledWithMatch(sinon.match(/overseer:terran enable/));
+            console.log.should.not.have.been.calledWithMatch(sinon.match(/overlord disable/));
+            console.log.should.not.have.been.calledWithMatch(sinon.match(/colonist:colonist disable/));
+        });
+
         it('console transport', function () {
+            transport.console.enable(['*']);
             let zergling = zerg.create('zergling');
             zergling.info('some string', 0, true);
 
