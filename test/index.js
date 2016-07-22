@@ -15,7 +15,7 @@ var afterEach = require('mocha').afterEach,
 chai.use(sinonChai);
 chai.should();
 
-var logger = require('../src/index.js');
+var zerg = require('../src/index.js');
 var transport = require('../src/transport');
 
 /*
@@ -31,23 +31,23 @@ describe('logger', function () {
 
     it('singleton', function () {
         let zergCopy = require('../src/index.js');
-        zergCopy.should.to.be.equal(logger);
+        zergCopy.should.to.be.equal(zerg);
     });
 
     it('create log', function () {
-        var drone = logger.create('drone');
+        var drone = zerg.create('drone');
         assert.isObject(drone, 'drone is function');
     });
 
     it('create log copy', function () {
-        let ravager = logger.create('ravager');
-        let ravagerCopy = logger.create('ravager');
+        let ravager = zerg.create('ravager');
+        let ravagerCopy = zerg.create('ravager');
 
         ravager.should.to.be.equal(ravagerCopy);
     });
 
     it('get logs functions', function () {
-        let logs = logger.getLogs();
+        let logs = zerg.getLogs();
 
         for (let i = 0; i < logs.length; i++) {
             let log = logs[i];
@@ -61,7 +61,7 @@ describe('logger', function () {
     });
 
     it('log methods', function () {
-        var overlord = logger.create('overlord');
+        var overlord = zerg.create('overlord');
         assert.isFunction(overlord.debug, 'has info method');
         assert.isFunction(overlord.info, 'has info method');
         assert.isFunction(overlord.warn, 'has warn method');
@@ -71,7 +71,7 @@ describe('logger', function () {
     describe('transport', function () {
 
         it('add new transport', function (done) {
-            var overseer = logger.create('overseer');
+            var overseer = zerg.create('overseer');
             var transport = function (msg) {
                 assert.isObject(msg);
                 assert.isNumber(msg.timestamp, 'has timestamp in number');
@@ -80,21 +80,21 @@ describe('logger', function () {
                 assert.equal(msg.message, 'some message');
                 assert.lengthOf(msg.arguments, 0);
                 done();
-                logger.removeSubscriber(transport);
+                zerg.removeSubscriber(transport);
             };
 
-            logger.use(transport);
+            zerg.use(transport);
             overseer.info('some message');
 
-            logger.use.should.throw(/use: callback must be a function/);
+            zerg.use.should.throw(/use: callback must be a function/);
         });
 
         it('delete not existing transport remove', function () {
-            logger.removeSubscriber(function () {});
+            zerg.removeSubscriber(function () {});
         });
 
         it('arguments after message', function (done) {
-            var changeling = logger.create('changeling');
+            var changeling = zerg.create('changeling');
             var fn = function () {};
             var transport = function (msg) {
                 assert.equal(msg.message, 'message from changeling');
@@ -106,10 +106,10 @@ describe('logger', function () {
                 assert.deepEqual(msg.arguments[4], {foo: 'bar'});
                 assert.equal(msg.arguments[5], fn);
                 done();
-                logger.removeSubscriber(transport);
+                zerg.removeSubscriber(transport);
             };
 
-            logger.use(transport);
+            zerg.use(transport);
             changeling.info('message from changeling', false, 'string', 1, [], {foo: 'bar'}, fn);
         });
 
@@ -132,30 +132,30 @@ describe('logger', function () {
         beforeEach(function () {
             sinon.spy(console, 'log');
             transport.console.enable([]);
-            logger.use(transport.console);
+            zerg.use(transport.console);
         });
 
         afterEach(function () {
-            logger.removeSubscriber(transport.console);
+            zerg.removeSubscriber(transport.console);
             console.log.restore();
         });
 
         it('console transport', function () {
-            let zergling = logger.create('zergling');
+            let zergling = zerg.create('zergling');
             zergling.info('some string', 0, true);
 
             let styles = transport.console.styles;
             let _message = styles.green('[info][zergling]') + ' some string';
 
             console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
-            logger.removeSubscriber(transport.console);
+            zerg.removeSubscriber(transport.console);
         });
 
         it('disable', function () {
             transport.console.enable(['-baneling']);
 
             let styles = transport.console.styles;
-            let baneling = logger.create('baneling');
+            let baneling = zerg.create('baneling');
             let _message = styles.green('[info][baneling]') + ' some string';
             baneling.info('some string');
 
@@ -171,7 +171,7 @@ describe('logger', function () {
         it('disable with wildcard', function () {
             transport.console.enable(['-roach*']);
 
-            let roach = logger.create('roach:v1');
+            let roach = zerg.create('roach:v1');
             roach.info('some string');
 
             let styles = transport.console.styles;
@@ -188,9 +188,9 @@ describe('logger', function () {
         it('enable', function () {
             transport.console.enable(['hydralisk']);
 
-            logger.create('hydralisk').info('some string');
-            logger.create('swarm host').info('swarm host here');
-            logger.create('locust').info('locust logging');
+            zerg.create('hydralisk').info('some string');
+            zerg.create('swarm host').info('swarm host here');
+            zerg.create('locust').info('locust logging');
 
             let styles = transport.console.styles;
             let _message = styles.green('[info][hydralisk]') + ' some string';
@@ -200,12 +200,12 @@ describe('logger', function () {
         it('enable with wildcard', function () {
             transport.console.enable(['queen*']);
 
-            logger.create('queen:1').info('some string');
-            logger.create('queen:2').info('some string');
-            logger.create('queen:3').info('some string');
+            zerg.create('queen:1').info('some string');
+            zerg.create('queen:2').info('some string');
+            zerg.create('queen:3').info('some string');
 
-            logger.create('swarm host').info('swarm host here');
-            logger.create('locust').info('locust logging');
+            zerg.create('swarm host').info('swarm host here');
+            zerg.create('locust').info('locust logging');
 
             console.log.should.have.been.calledThrice;
         });
