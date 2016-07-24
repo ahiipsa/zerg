@@ -7,7 +7,8 @@ var codes = {
     cyan: [36, 39],
     red: [31, 39],
     green: [32, 39],
-    yellow: [33, 39]
+    yellow: [33, 39],
+    gray: [90, 39]
 };
 
 var styles = {};
@@ -24,6 +25,7 @@ Object.keys(codes).forEach(function (key) {
 });
 
 var map = {
+    verbose: styles.gray,
     debug: styles.cyan,
     error: styles.red,
     info: styles.green,

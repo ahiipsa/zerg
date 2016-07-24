@@ -33,6 +33,7 @@ zerg.use(transport.console);
 var log = zerg.create('myAppModule');
 
 // usage
+log.verbose('log verbose message');
 log.debug('log debug message');
 log.info('log info message', 10);
 log.warn('log warn message', false);

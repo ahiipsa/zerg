@@ -134,7 +134,7 @@ class Zerg {
 
 }
 
-const levels = ['debug', 'info', 'warn', 'error'];
+const levels = ['verbose', 'debug', 'info', 'warn', 'error'];
 
 /**
  * Zerg module

@@ -64,6 +64,7 @@ describe('logger', function () {
 
     it('log methods', function () {
         var overlord = zerg.create('overlord');
+        assert.isFunction(overlord.verbose, 'has verbose method');
         assert.isFunction(overlord.debug, 'has info method');
         assert.isFunction(overlord.info, 'has info method');
         assert.isFunction(overlord.warn, 'has warn method');
