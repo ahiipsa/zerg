@@ -3,19 +3,19 @@
 /**
  * @type {Zerg}
  */
-let loggerInst = null;
+var loggerInst = null;
 
 /**
  * @type {Object.<Log>}
  * @private
  */
-let __logs = {};
+var __logs = {};
 
 /**
  * @type {array<Log>}
  * @private
  */
-let __subscribers = [];
+var __subscribers = [];
 
 
 /**
@@ -105,7 +105,7 @@ class Zerg {
      * @return {undefined}
      */
     __emit(logInfo) {
-        for (var i = 0; i < __subscribers.length; i++) {
+        for (let i = 0; i < __subscribers.length; i++) {
             __subscribers[i](logInfo);
         }
     }
@@ -145,7 +145,7 @@ class Log {
 
         levels.forEach((level) => {
             this[level] = function (message) {
-                var args = Array.prototype.slice.call(arguments, 1);
+                let args = Array.prototype.slice.call(arguments, 1);
                 loggerInst.__log(this.name, level, message, args);
             }
         });

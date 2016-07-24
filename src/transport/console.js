@@ -13,8 +13,8 @@ var codes = {
 var styles = {};
 
 Object.keys(codes).forEach(function (key) {
-    var open = `\u001b[${codes[key][0]}m`;
-    var close = `\u001b[${codes[key][1]}m`;
+    let open = `\u001b[${codes[key][0]}m`;
+    let close = `\u001b[${codes[key][1]}m`;
 
     styles[key] = (function (open, close) {
         return function (string) {
