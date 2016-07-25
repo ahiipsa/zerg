@@ -38,7 +38,7 @@ describe('logger', function () {
 
     it('create log', function () {
         var drone = zerg.create('drone');
-        assert.isObject(drone, 'drone is function');
+        drone.should.to.be.a('object');
     });
 
     it('create log copy', function () {
@@ -53,11 +53,11 @@ describe('logger', function () {
 
         for (let i = 0; i < logs.length; i++) {
             let log = logs[i];
-            log.to.have.property('name');
-            log.to.have.property('debug');
-            log.to.have.property('info');
-            log.to.have.property('warn');
-            log.to.have.property('error');
+            log.should.to.have.property('name');
+            log.should.to.have.property('debug');
+            log.should.to.have.property('info');
+            log.should.to.have.property('warn');
+            log.should.to.have.property('error');
         }
 
     });
@@ -74,20 +74,20 @@ describe('logger', function () {
     describe('transport', function () {
 
         it('add new transport', function (done) {
-            var overseer = zerg.create('overseer');
-            var transport = function (msg) {
-                assert.isObject(msg);
-                assert.isNumber(msg.timestamp, 'has timestamp in number');
-                assert.equal(msg.level, 'info');
-                assert.equal(msg.name, 'overseer');
-                assert.equal(msg.message, 'some message');
-                assert.lengthOf(msg.arguments, 0);
-                done();
+            let overseer = zerg.create('overseer');
+            let transport = (logObject) => {
+                logObject.should.to.be.a('object');
+                logObject.timestamp.should.to.be.a('number');
+                logObject.level.should.to.be.a('string').and.equal('info');
+                logObject.name.should.to.be.a('string').and.equal('overseer');
+                logObject.message.should.to.be.a('string').and.equal('some message');
+                logObject.arguments.should.to.be.length(3);
                 zerg.removeSubscriber(transport);
+                done();
             };
 
             zerg.use(transport);
-            overseer.info('some message');
+            overseer.info('some message', true, 1, ['a', 'b', 'c']);
 
             zerg.use.should.throw(/use: callback must be a function/);
         });
