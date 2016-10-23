@@ -14,19 +14,19 @@ var loggerInst = null;
 var __logs = {};
 
 /**
- * @type {array<Log>}
+ * @type {Array.<Object>}
  * @private
  */
 var __subscribers = [];
 
 
 /**
- * @typedef {object} LogObject
+ * @typedef {Object} LogObject
  * @property {number} timestamp Time of create log event
  * @property {string} level Level of event
  * @property {string} name Module name with send log event
  * @property {string} message Message of log event
- * @property {array<any>} event.arguments Extended info
+ * @property {Array.<any>} event.arguments Extended info
  */
 
 
@@ -77,8 +77,8 @@ class Zerg {
 
 
     /**
-     * @param {transportCallback} callback - Function for custom transport
-     * @param {Array<string>} [levels] - Function for custom transport
+     * @param {function} callback - Function for custom transport
+     * @param {Array.<string>} [levels] - Function for custom transport
      * @return {undefined}
      */
     use(callback, levels) {
@@ -139,8 +139,8 @@ class Zerg {
      * Master function creating LogObject
      * @param {string} moduleName - Log module name
      * @param {string} level - Level of log
-     * @param {name} message - Message of log
-     * @param {array<any>} args - Extended info
+     * @param {string} message - Message of log
+     * @param {Array.<any>} args - Extended info
      * @private
      * @return {undefined}
      */

@@ -37,7 +37,7 @@ var moduleDisable = false;
 
 /**
  * Enable/Disable module in console.log
- * @param {Array<string>} modules - List of modules to disable
+ * @param {Array.<string>} modules - List of modules to disable
  * @return {void}
  */
 var enable = function (modules) {
