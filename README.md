@@ -55,13 +55,14 @@ Simple example for preview data format:
 var zerg = require('zerg');
 var log = zerg.create('mySupperModule');
 
-zerg.use(function (logObject) {
-
+var myCustomTransport = function (logObject) {
+    // do something with logObject
     console.dir(logObject);
-    
-});
+};
 
-log.info('create staff', true, 1, ['array'], {foo: 'bar'});
+zerg.use(myCustomTransport, ['error']);
+
+log.error('create staff', true, 1, ['array'], {foo: 'bar'});
 
 ```
 
@@ -71,7 +72,7 @@ result:
 
 {
     timestamp: 1467967421933,
-    level: 'info',
+    level: 'error',
     name: 'mySuperModule',
     message: 'create staff',
     arguments: [ true, 1, [ 'array' ], { foo: 'bar' } ]

@@ -1,5 +1,7 @@
 'use strict';
 
+const LOG_LEVELS = ['verbose', 'debug', 'info', 'warn', 'error'];
+
 /**
  * @type {Zerg}
  */
@@ -76,13 +78,29 @@ class Zerg {
 
     /**
      * @param {transportCallback} callback - Function for custom transport
+     * @param {Array<string>} [levels] - Function for custom transport
      * @return {undefined}
      */
-    use(callback) {
+    use(callback, levels) {
         if (typeof callback !== 'function') {
             throw new Error('use: callback must be a function');
         }
-        __subscribers.push(callback);
+
+        let logLevels = [];
+        if (typeof levels === 'undefined') {
+            logLevels = LOG_LEVELS;
+        } else {
+            logLevels = levels;
+        }
+
+        if (!Array.isArray(logLevels)) {
+            throw new Error('use: levels must me array of string')
+        }
+
+        __subscribers.push({
+            callback: callback,
+            levels: logLevels
+        });
     }
 
 
@@ -91,9 +109,12 @@ class Zerg {
      * @return {undefined}
      */
     removeSubscriber(callback) {
-        let index = __subscribers.indexOf(callback);
-        if (index !== -1) {
-            __subscribers.splice(index, 1);
+        for (let i = 0; i < __subscribers.length; i++) {
+            let subscriber = __subscribers[i];
+
+            if (subscriber.callback === callback) {
+                __subscribers.splice(i, 1);
+            }
         }
     }
 
@@ -106,7 +127,10 @@ class Zerg {
      */
     __emit(logInfo) {
         for (let i = 0; i < __subscribers.length; i++) {
-            __subscribers[i](logInfo);
+            let subscriber = __subscribers[i];
+            if (subscriber.levels.indexOf(logInfo.level) > -1) {
+                subscriber.callback(logInfo);
+            }
         }
     }
 
@@ -134,8 +158,6 @@ class Zerg {
 
 }
 
-const levels = ['verbose', 'debug', 'info', 'warn', 'error'];
-
 /**
  * Zerg module
  */
@@ -143,7 +165,7 @@ class Log {
     constructor(loggerName) {
         this.name = loggerName;
 
-        levels.forEach((level) => {
+        LOG_LEVELS.forEach((level) => {
             this[level] = function (message) {
                 let args = Array.prototype.slice.call(arguments, 1);
                 loggerInst.__log(this.name, level, message, args);

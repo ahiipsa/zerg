@@ -92,8 +92,39 @@ describe('logger', function () {
             zerg.use.should.throw(/use: callback must be a function/);
         });
 
-        it('delete not existing transport remove', function () {
+        it('bad levels parameter', function () {
+            let badTransport = function () {
+                zerg.use(() => true, 1);
+            };
+
+            badTransport.should.throw(/use: levels must me array of string/);
+        });
+
+        it('delete existing transport', function () {
+            let transport = () => true;
+            zerg.use(transport);
+            zerg.removeSubscriber(transport);
+        });
+
+        it('delete NOT existing transport', function () {
             zerg.removeSubscriber(function () {});
+        });
+
+        it('subscribe to levels', function () {
+            let showLevel = sinon.spy();
+
+            zerg.use((logObject) => {
+                showLevel(logObject.level);
+            }, ['info']);
+
+            zerg.create('infestor').verbose('some string');
+            zerg.create('infestor').debug('some string');
+            zerg.create('infestor').info('some string');
+            zerg.create('infestor').warn('some string');
+            zerg.create('infestor').error('some string');
+
+            showLevel.should.have.been.calledWith('info');
+            showLevel.should.not.have.been.calledWith('error');
         });
 
         it('arguments after message', function (done) {
