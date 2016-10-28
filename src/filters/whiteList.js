@@ -46,21 +46,12 @@ var isEnableModule = function (logObject) {
         return false;
     }
 
-    if (!whiteList.length || (whiteList.length && enableRegExp.test(logObject.name))) {
+    if (!whiteList.length || whiteList.length && enableRegExp.test(logObject.name)) {
         return true;
     }
 
     return false;
 };
-
-/**
- * Enable module from process.env.DEBUG and compatibility with npm "debug" package
- */
-//if (process.env.DEBUG) {
-//    let debug = process.env.DEBUG;
-//    let modules = debug.split(',').map((item) => item.trim());
-//    enable(modules);
-//}
 
 module.exports.enable = enable;
 module.exports.isEnableModule = isEnableModule;

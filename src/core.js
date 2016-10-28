@@ -122,7 +122,10 @@ class Zerg {
         }
     }
 
-
+    /**
+     * @param {function} fn - filtered function
+     * @returns {undefined}
+     */
     addFilter(fn) {
         __filters.push(fn);
     }
@@ -132,7 +135,7 @@ class Zerg {
      * Propagation event for transport
      * @param {LogObject} logInfo - Just LogObject
      * @private
-     * @return {boolean}
+     * @return {boolean} result
      */
     __emit(logInfo) {
 
