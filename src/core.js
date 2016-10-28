@@ -5,24 +5,24 @@ const LOG_LEVELS = ['verbose', 'debug', 'info', 'warn', 'error'];
 /**
  * @type {Zerg}
  */
-var loggerInst = null;
+let loggerInst = null;
 
 /**
  * @type {Object.<Log>}
  * @private
  */
-var __logs = {};
+const __logs = {};
 
 /**
  * @type {Array.<Object>}
  * @private
  */
-var __subscribers = [];
+const __transports = [];
 
 /**
  * @type {Array.<function>}
  */
-var __filters = [];
+const __filters = [];
 
 /**
  * @typedef {Object} LogObject
@@ -85,9 +85,9 @@ class Zerg {
      * @param {Array.<string>} [levels] - Function for custom transport
      * @return {undefined}
      */
-    use(callback, levels) {
+    addTransport(callback, levels) {
         if (typeof callback !== 'function') {
-            throw new Error('use: callback must be a function');
+            throw new Error('addTransport: callback must be a function');
         }
 
         let logLevels = [];
@@ -98,18 +98,13 @@ class Zerg {
         }
 
         if (!Array.isArray(logLevels)) {
-            throw new Error('use: levels must me array of string')
+            throw new Error('addTransport: levels must me array of string')
         }
 
-        __subscribers.push({
+        __transports.push({
             callback: callback,
             levels: logLevels
         });
-    }
-
-
-    addFilter(fn) {
-        __filters.push(fn);
     }
 
 
@@ -117,14 +112,19 @@ class Zerg {
      * @param {function} callback - Function with transport
      * @return {undefined}
      */
-    removeSubscriber(callback) {
-        for (let i = 0; i < __subscribers.length; i++) {
-            let subscriber = __subscribers[i];
+    removeTransport(callback) {
+        for (let i = 0; i < __transports.length; i++) {
+            let subscriber = __transports[i];
 
             if (subscriber.callback === callback) {
-                __subscribers.splice(i, 1);
+                __transports.splice(i, 1);
             }
         }
+    }
+
+
+    addFilter(fn) {
+        __filters.push(fn);
     }
 
 
@@ -137,7 +137,7 @@ class Zerg {
     __emit(logInfo) {
 
         const filterCount = __filters.length;
-        const subscriberCount = __subscribers.length;
+        const subscriberCount = __transports.length;
 
         for (let fi = 0; fi < filterCount; fi++) {
             let filter = __filters[fi];
@@ -148,7 +148,7 @@ class Zerg {
         }
 
         for (let i = 0; i < subscriberCount; i++) {
-            let subscriber = __subscribers[i];
+            let subscriber = __transports[i];
             if (subscriber.levels.indexOf(logInfo.level) > -1) {
                 subscriber.callback(logInfo);
             }

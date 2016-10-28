@@ -2,21 +2,18 @@
 
 /* eslint no-console: "off", no-empty-function: "off" */
 
-var zerg = require('../src');
-var transport = require('../src/transport');
+const zerg = require('../src');
 
-var demos = [
+const demos = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',
     'lurker', 'swarm host', 'locust', 'queen', 'mutalisk', 'guardian', 'devourer', 'corruptor', 'brood lord', 'viper',
     'scourge', 'defiler', 'queen', 'infestor', 'ultralisk', 'omegalisk', 'pigalisk', 'brutalisk', 'leviathan',
     'broodling', 'infested terran', 'infested colonist', 'infested marine', 'aberration'
 ];
 
-transport.console.enable(demos.map(function (val) {
+zerg.enable(demos.map(function (val) {
     return '-' + val + '*'
 }));
-
-zerg.use(transport.console);
 
 var logs = [];
 logs.push(zerg.create('api'));
@@ -30,13 +27,13 @@ logs.push(zerg.create('benchmark:v3'));
 
 
 const CYCLES = 1000000;
-var results = [];
+const results = [];
 
 // disable console.log
-var originConsoleLog = console.log;
+const originConsoleLog = console.log;
 console.log = function () {};
 
-for (var k = 0; k < CYCLES; k++) {
+for (let k = 0; k < CYCLES; k++) {
     let log = logs[Math.floor(Math.random() * logs.length)];
     let start = process.hrtime();
 

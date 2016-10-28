@@ -18,19 +18,17 @@ lightweight logging library for apps and libs
 
 ### Install
 
-`npm i --save zerg`
+`npm i zerg --save`
 
 ### Setup
 
 ```js
 
 // setup
-var zerg = require('zerg');
-var transport = require('zerg/src/transport');
-zerg.use(transport.console);
+const zerg = require('zerg');
 
 // create log function for module
-var log = zerg.create('myAppModule');
+const log = zerg.create('myAppModule');
 
 // usage
 log.verbose('log verbose message');
@@ -45,6 +43,43 @@ result:
 
 ![ScreenShot](https://raw.github.com/ahiipsa/zerg/master/example/example.png)
 
+
+### Enable/Disable module
+
+you can disable some log by module name, example:
+
+```js
+
+// bootstrap.js
+const zerg = require('zerg');
+
+// enable log only for api
+zerg.enable(['api']);
+
+// or use wildcard
+zerg.enable(['api*']);
+
+// disable log for api
+zerg.enable(['-api']);
+// or use wildcard
+zerg.enable(['-api*']);
+
+// combination
+zerg.enable(['perfix:*', 'api', '-db', '-http']);
+
+// src/api.js
+const zerg = require('zerg');
+const log = zerg.create('api');
+
+
+// src/db.js
+const zerg = require('zerg');
+const log = zerg.create('db');
+
+```
+
+## Transports
+
 ### Custom transport
 
 
@@ -52,15 +87,16 @@ Simple example for preview data format:
 
 ```js
 
-var zerg = require('zerg');
-var log = zerg.create('mySupperModule');
+const zerg = require('zerg');
+const log = zerg.create('mySupperModule');
 
-var myCustomTransport = function (logObject) {
+const myCustomTransport = function (logObject) {
     // do something with logObject
     console.dir(logObject);
 };
 
-zerg.use(myCustomTransport, ['error']);
+
+zerg.addTransport(myCustomTransport, ['error']);
 
 log.error('create staff', true, 1, ['array'], {foo: 'bar'});
 
@@ -85,7 +121,7 @@ when is needed:
 
 ```js
 
-zerg.use(function (logObject) {
+zerg.addTransport(function (logObject) {
     if(NODE_ENV === 'production' && logObject.level === 'error') {
         // write to file
     } else if (NOVE_ENV !== 'production') {
@@ -95,66 +131,4 @@ zerg.use(function (logObject) {
 
 log.info('create staff', {foo: 'bar'});
 
-```
-
-
-## Transports
-
-zerg have some inbox transport 
-
-## Console
-
-### Setup
-
-```js
-
-// bootstrap.js
-
-var zerg = require('zerg');
-var transport = require('zerg/src/transport');
-zerg.use(transport.console);
-
-```
-
-### Enable/Disable module
-
-you can disable some log by module name, example:
-
-```js
-
-// bootstrap.js
-var zerg = require('zerg');
-var transport = require('zerg/src/transport');
-zerg.use(transport.console);
-
-// enable log only for api
-transport.console.enable(['api']);
-
-// or use wildcard 
-transport.console.enable(['api*']);
-
-// disable log for api
-transport.console.enable(['-api']);
-// or use wildcard
-transport.console.enable(['-api*']);
-
-// combination
-transport.console.enable(['perfix:*', 'api', '-db', '-http']);
-
-// src/api.js
-var zerg = require('zerg');
-var log = zerg.create('api');
-
-
-// src/db.js
-var zerg = require('zerg');
-var log = zerg.create('db');
-
-```
-
-also enable/disable module from **DEBUG** environment variable
-(as package [debug](https://www.npmjs.com/package/debug#wildcards)) 
-
-```js
-DEBUG="perfix:*,api,-db,-http" node app.js
 ```

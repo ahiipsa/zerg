@@ -79,38 +79,38 @@ describe('logger', function () {
                 logObject.name.should.to.be.a('string').and.equal('overseer');
                 logObject.message.should.to.be.a('string').and.equal('some message');
                 logObject.arguments.should.to.be.length(3);
-                zerg.removeSubscriber(newTransport);
+                zerg.removeTransport(newTransport);
                 done();
             };
 
-            zerg.use(newTransport);
+            zerg.addTransport(newTransport);
             overseer.info('some message', true, 1, ['a', 'b', 'c']);
 
-            zerg.use.should.throw(/use: callback must be a function/);
+            zerg.addTransport.should.throw(/addTransport: callback must be a function/);
         });
 
         it('bad levels parameter', function () {
             let badTransport = function () {
-                zerg.use(() => true, 1);
+                zerg.addTransport(() => true, 1);
             };
 
-            badTransport.should.throw(/use: levels must me array of string/);
+            badTransport.should.throw(/addTransport: levels must me array of string/);
         });
 
         it('delete existing transport', function () {
             let transport = () => true;
-            zerg.use(transport);
-            zerg.removeSubscriber(transport);
+            zerg.addTransport(transport);
+            zerg.removeTransport(transport);
         });
 
         it('delete NOT existing transport', function () {
-            zerg.removeSubscriber(function () {});
+            zerg.removeTransport(function () {});
         });
 
         it('subscribe to levels', function () {
             let showLevel = sinon.spy();
 
-            zerg.use((logObject) => {
+            zerg.addTransport((logObject) => {
                 showLevel(logObject.level);
             }, ['info']);
 
@@ -137,10 +137,10 @@ describe('logger', function () {
                 assert.deepEqual(msg.arguments[4], {foo: 'bar'});
                 assert.equal(msg.arguments[5], fn);
                 done();
-                zerg.removeSubscriber(transport);
+                zerg.removeTransport(transport);
             };
 
-            zerg.use(transport);
+            zerg.addTransport(transport);
             changeling.info('message from changeling', false, 'string', 1, [], {foo: 'bar'}, fn);
         });
 
@@ -166,21 +166,6 @@ describe('logger', function () {
 
         afterEach(function () {
             console.log.restore();
-        });
-
-        it('disable from DEBUG env variable', function () {
-            // process.env.DEBUG = 'drone,-overlord,overseer*,-changeling*';
-            zerg.create('drone').info('drone enable');
-            zerg.create('overseer:terran').info('overseer:terran enable');
-
-            zerg.create('overlord').info('overlord disable');
-            zerg.create('changeling:colonist').info('colonist:colonist disable');
-
-            console.log.should.have.been.calledTwice;
-            console.log.should.have.been.calledWithMatch(sinon.match(/drone enable/));
-            console.log.should.have.been.calledWithMatch(sinon.match(/overseer:terran enable/));
-            console.log.should.not.have.been.calledWithMatch(sinon.match(/overlord disable/));
-            console.log.should.not.have.been.calledWithMatch(sinon.match(/colonist:colonist disable/));
         });
 
         it('console transport', function () {
