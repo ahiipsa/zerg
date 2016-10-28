@@ -3,9 +3,6 @@
 /* eslint no-console: "off", no-empty-function: "off", global-require: "off", no-unused-expressions
 : off, no-process-env: "off"*/
 
-// for test transport.console
-process.env.DEBUG = 'drone,-overlord,overseer*,-changeling*';
-
 var afterEach = require('mocha').afterEach,
     assert = require('chai').assert,
     beforeEach = require('mocha').beforeEach,
@@ -75,18 +72,18 @@ describe('logger', function () {
 
         it('add new transport', function (done) {
             let overseer = zerg.create('overseer');
-            let transport = (logObject) => {
+            let newTransport = (logObject) => {
                 logObject.should.to.be.a('object');
                 logObject.timestamp.should.to.be.a('number');
                 logObject.level.should.to.be.a('string').and.equal('info');
                 logObject.name.should.to.be.a('string').and.equal('overseer');
                 logObject.message.should.to.be.a('string').and.equal('some message');
                 logObject.arguments.should.to.be.length(3);
-                zerg.removeSubscriber(transport);
+                zerg.removeSubscriber(newTransport);
                 done();
             };
 
-            zerg.use(transport);
+            zerg.use(newTransport);
             overseer.info('some message', true, 1, ['a', 'b', 'c']);
 
             zerg.use.should.throw(/use: callback must be a function/);
@@ -165,11 +162,9 @@ describe('logger', function () {
 
         beforeEach(function () {
             sinon.spy(console, 'log');
-            zerg.use(transport.console);
         });
 
         afterEach(function () {
-            zerg.removeSubscriber(transport.console);
             console.log.restore();
         });
 
@@ -189,7 +184,7 @@ describe('logger', function () {
         });
 
         it('console transport', function () {
-            transport.console.enable(['*']);
+            zerg.enable(['*']);
             let zergling = zerg.create('zergling');
             zergling.info('some string', 0, true);
 
@@ -197,11 +192,10 @@ describe('logger', function () {
             let _message = styles.green('[info][zergling]') + ' some string';
 
             console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
-            zerg.removeSubscriber(transport.console);
         });
 
         it('disable', function () {
-            transport.console.enable(['-baneling']);
+            zerg.enable(['-baneling']);
 
             let styles = transport.console.styles;
             let baneling = zerg.create('baneling');
@@ -210,7 +204,7 @@ describe('logger', function () {
 
             console.log.should.not.have.been.calledWith(_message);
 
-            transport.console.enable([]);
+            zerg.enable([]);
 
             baneling.info('some string');
 
@@ -218,7 +212,7 @@ describe('logger', function () {
         });
 
         it('disable with wildcard', function () {
-            transport.console.enable(['-roach*']);
+            zerg.enable(['-roach*']);
 
             let roach = zerg.create('roach:v1');
             roach.info('some string');
@@ -227,7 +221,7 @@ describe('logger', function () {
             let _message = styles.green('[info][roach:v1]') + ' some string';
             console.log.should.not.have.been.calledWith(_message);
 
-            transport.console.enable([]);
+            zerg.enable([]);
 
             roach.info('some string');
 
@@ -235,7 +229,7 @@ describe('logger', function () {
         });
 
         it('enable', function () {
-            transport.console.enable(['hydralisk']);
+            zerg.enable(['hydralisk']);
 
             zerg.create('hydralisk').info('some string');
             zerg.create('swarm host').info('swarm host here');
@@ -247,7 +241,7 @@ describe('logger', function () {
         });
 
         it('enable with wildcard', function () {
-            transport.console.enable(['queen*']);
+            zerg.enable(['queen*']);
 
             zerg.create('queen:1').info('some string');
             zerg.create('queen:2').info('some string');

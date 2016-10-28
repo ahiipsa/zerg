@@ -1,12 +1,8 @@
-'use strict';
-
 // setup
-var zerg = require('zerg');
-var transport = require('zerg/src/transport');
-zerg.use(transport.console);
+const zerg = require('zerg');
 
 // create log function for module
-var log = zerg.create('myAppModule');
+const log = zerg.create('myAppModule');
 
 // usage
 log.verbose('log verbose message');
