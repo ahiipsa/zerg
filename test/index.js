@@ -174,7 +174,7 @@ describe('logger', function () {
             zergling.info('some string', 0, true);
 
             let styles = transport.console.styles;
-            let _message = styles.green('[info][zergling]') + ' some string';
+            let _message = styles.green('[zergling]') + ' some string';
 
             console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
         });
@@ -194,7 +194,7 @@ describe('logger', function () {
 
             let styles = transport.console.styles;
             let baneling = zerg.module('baneling');
-            let _message = styles.green('[info][baneling]') + ' some string';
+            let _message = styles.green('[baneling]') + ' some string';
             baneling.info('some string');
 
             console.log.should.not.have.been.calledWith(_message);
@@ -213,7 +213,7 @@ describe('logger', function () {
             roach.info('some string');
 
             let styles = transport.console.styles;
-            let _message = styles.green('[info][roach:v1]') + ' some string';
+            let _message = styles.green('[roach:v1]') + ' some string';
             console.log.should.not.have.been.calledWith(_message);
 
             zerg.enable([]);
@@ -231,7 +231,7 @@ describe('logger', function () {
             zerg.module('locust').info('locust logging');
 
             let styles = transport.console.styles;
-            let _message = styles.green('[info][hydralisk]') + ' some string';
+            let _message = styles.green('[hydralisk]') + ' some string';
             console.log.should.have.been.calledOnce.calledWith(_message);
         });
 

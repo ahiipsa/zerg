@@ -33,9 +33,9 @@ const map = {
  * @return {void}
  */
 const handler = function (logObject) {
-    let style = map[logObject.level];
-    let message = style(`[${logObject.level}][${logObject.name}]`) + ' ' + logObject.message;
-    let args = [message].concat(logObject.arguments);
+    const style = map[logObject.level];
+    const message = style(`[${logObject.name}]`) + ' ' + logObject.message;
+    const args = [message].concat(logObject.arguments);
     console.log.apply(console, args);
 };
 
