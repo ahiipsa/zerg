@@ -2,7 +2,7 @@
 
 /* eslint no-console: "off" */
 
-var codes = {
+const codes = {
     reset: [0, 0],
     cyan: [36, 39],
     red: [31, 39],
@@ -11,20 +11,16 @@ var codes = {
     gray: [90, 39]
 };
 
-var styles = {};
+const styles = {};
 
 Object.keys(codes).forEach(function (key) {
     let open = `\u001b[${codes[key][0]}m`;
     let close = `\u001b[${codes[key][1]}m`;
 
-    styles[key] = (function (open, close) {
-        return function (string) {
-            return open + string + close;
-        }
-    })(open, close);
+    styles[key] = (string) => open + string + close;
 });
 
-var map = {
+const map = {
     verbose: styles.gray,
     debug: styles.cyan,
     error: styles.red,
@@ -33,10 +29,10 @@ var map = {
 };
 
 /**
- * @param {LogObject} logObject Object of log event
+ * @param {LogObject} logObject - Object of log event
  * @return {void}
  */
-var handler = function (logObject) {
+const handler = function (logObject) {
     let style = map[logObject.level];
     let message = style(`[${logObject.level}][${logObject.name}]`) + ' ' + logObject.message;
     let args = [message].concat(logObject.arguments);

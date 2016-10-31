@@ -1,4 +1,4 @@
 'use strict';
 
-var whiteList = require('./whiteList');
+const whiteList = require('./whiteList');
 module.exports = {whiteList};

@@ -1,18 +1,18 @@
 /* eslint max-statements: ["error", 13], no-process-env: "off" */
 'use strict';
 
-var enableRegExp = new RegExp();
-var disableReqExp = new RegExp();
+let enableRegExp = new RegExp();
+let disableReqExp = new RegExp();
 
 let whiteList = [];
 let blackList = [];
 
 /**
- * Enable/Disable module
+ * Enable/Disable {@link Module}
  * @param {Array.<string>} modules - List of modules to disable
  * @return {void}
  */
-var enable = function (modules) {
+const enable = function (modules) {
 
     blackList = [];
     whiteList = [];
@@ -40,17 +40,13 @@ var enable = function (modules) {
     }
 };
 
-var isEnableModule = function (logObject) {
+const isEnableModule = function (logObject) {
 
     if (blackList.length && disableReqExp.test(logObject.name)) {
         return false;
     }
 
-    if (!whiteList.length || whiteList.length && enableRegExp.test(logObject.name)) {
-        return true;
-    }
-
-    return false;
+    return !whiteList.length || whiteList.length && enableRegExp.test(logObject.name);
 };
 
 module.exports.enable = enable;

@@ -26,11 +26,11 @@ const __filters = [];
 
 /**
  * @typedef {Object} LogObject
- * @property {number} timestamp Time of create log event
- * @property {string} level Level of event
- * @property {string} name Module name with send log event
- * @property {string} message Message of log event
- * @property {Array.<any>} arguments Extended info
+ * @property {number} timestamp - Time of create log event
+ * @property {string} level - Level of event
+ * @property {string} name - Module name with send log event
+ * @property {string} message - Message of log event
+ * @property {Array.<any>} arguments - Extended info
  */
 
 
@@ -50,7 +50,7 @@ class Zerg {
     /**
      * Create named Module instance
      * @param {string} moduleName - Name for log function
-     * @return {Module} - Instance Module
+     * @return {Module} - Instance {@link Module}
      */
     module(moduleName) {
         let module = this.getModule(moduleName);
@@ -65,7 +65,7 @@ class Zerg {
     }
 
     /**
-     * @param {string} moduleName - Name of Module
+     * @param {string} moduleName - Name of {@link Module}
      * @returns {Module|boolean} - module instance or false if not exist
      */
     getModule(moduleName) {
@@ -74,7 +74,7 @@ class Zerg {
 
 
     /**
-     * @param {Module} module - instance Module
+     * @param {Module} module - instance {@link Module}
      * @private
      * @return {undefined}
      */
@@ -146,7 +146,7 @@ class Zerg {
      * Propagation event for transport
      * @param {LogObject} logInfo - Just LogObject
      * @private
-     * @return {boolean} result
+     * @returns {boolean} result
      */
     __emit(logInfo) {
 
@@ -172,7 +172,7 @@ class Zerg {
 
     /**
      * Master function creating LogObject
-     * @param {string} moduleName - Module module name
+     * @param {string} moduleName - {@link Module} module name
      * @param {string} level - Level of log
      * @param {string} message - Message of log
      * @param {Array.<any>} args - Extended info
