@@ -80,6 +80,25 @@ const log = zerg.create('db');
 
 ## Transports
 
+### Console transport
+
+disable/enable
+
+```js
+
+const zerg = require('zerg');
+zerg.create('dis').info('enable');
+
+// disable console transport
+zerg.config({console: false});
+zerg.create('dis').info('disable');
+
+// enable console transport
+zerg.config({console: true});
+zerg.create('dis').info('enable');
+
+```
+
 ### Custom transport
 
 

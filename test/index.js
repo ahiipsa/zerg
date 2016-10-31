@@ -179,6 +179,16 @@ describe('logger', function () {
             console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
         });
 
+        it('console transport disable/enable', function () {
+            zerg.config({console: false});
+            zerg.create('disableConsoleTransport').info('disable');
+            console.log.should.not.have.been.called;
+
+            zerg.config({console: true});
+            zerg.create('disableConsoleTransport').info('enable');
+            console.log.should.have.been.called.once;
+        });
+
         it('disable', function () {
             zerg.enable(['-baneling']);
 
