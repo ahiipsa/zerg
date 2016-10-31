@@ -140,13 +140,15 @@ when is needed:
 
 ```js
 
-zerg.addTransport(function (logObject) {
+const myCustomTransport = (logObject) => {
     if(NODE_ENV === 'production' && logObject.level === 'error') {
         // write to file
     } else if (NOVE_ENV !== 'production') {
         // write to console
     }
-});
+}
+
+zerg.addTransport(myCustomTransport);
 
 log.info('create staff', {foo: 'bar'});
 
