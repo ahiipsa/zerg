@@ -8,7 +8,7 @@ let whiteList = [];
 let blackList = [];
 
 /**
- * Enable/Disable module in console.log
+ * Enable/Disable module
  * @param {Array.<string>} modules - List of modules to disable
  * @return {void}
  */

@@ -28,14 +28,14 @@ lightweight logging library for apps and libs
 const zerg = require('zerg');
 
 // create log function for module
-const log = zerg.create('myAppModule');
+const log = zerg.module('myAppModule');
 
 // usage
-log.verbose('log verbose message');
-log.debug('log debug message');
-log.info('log info message', 10);
-log.warn('log warn message', false);
-log.error('log error message', {message: 'something wrong'});
+log.verbose('verbose message');
+log.debug('debug message');
+log.info('info message', 10);
+log.warn('warn message', false);
+log.error('error message', {message: 'something wrong'});
 
 ```
 
@@ -69,12 +69,12 @@ zerg.enable(['perfix:*', 'api', '-db', '-http']);
 
 // src/api.js
 const zerg = require('zerg');
-const log = zerg.create('api');
+const log = zerg.module('api');
 
 
 // src/db.js
 const zerg = require('zerg');
-const log = zerg.create('db');
+const log = zerg.module('db');
 
 ```
 
@@ -87,15 +87,15 @@ disable/enable
 ```js
 
 const zerg = require('zerg');
-zerg.create('dis').info('enable');
+zerg.module('dis').info('enable');
 
 // disable console transport
 zerg.config({console: false});
-zerg.create('dis').info('disable');
+zerg.module('dis').info('disable');
 
 // enable console transport
 zerg.config({console: true});
-zerg.create('dis').info('enable');
+zerg.module('dis').info('enable');
 
 ```
 
@@ -107,7 +107,7 @@ Simple example for preview data format:
 ```js
 
 const zerg = require('zerg');
-const log = zerg.create('mySupperModule');
+const log = zerg.module('mySupperModule');
 
 const myCustomTransport = function (logObject) {
     // do something with logObject

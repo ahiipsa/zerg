@@ -1,6 +1,6 @@
 const zerg = require('zerg');
 
-const log = zerg.create('mySupperModule');
+const log = zerg.module('mySupperModule');
 
 const myCustomTransport = function (logObject) {
     // do something with logObject

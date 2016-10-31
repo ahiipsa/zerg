@@ -16,14 +16,14 @@ zerg.enable(demos.map(function (val) {
 }));
 
 var logs = [];
-logs.push(zerg.create('api'));
-logs.push(zerg.create('api:v1'));
-logs.push(zerg.create('api:v2'));
-logs.push(zerg.create('api:v3'));
-logs.push(zerg.create('benchmark'));
-logs.push(zerg.create('benchmark:v1'));
-logs.push(zerg.create('benchmark:v2'));
-logs.push(zerg.create('benchmark:v3'));
+logs.push(zerg.module('api'));
+logs.push(zerg.module('api:v1'));
+logs.push(zerg.module('api:v2'));
+logs.push(zerg.module('api:v3'));
+logs.push(zerg.module('benchmark'));
+logs.push(zerg.module('benchmark:v1'));
+logs.push(zerg.module('benchmark:v2'));
+logs.push(zerg.module('benchmark:v3'));
 
 
 const CYCLES = 1000000;

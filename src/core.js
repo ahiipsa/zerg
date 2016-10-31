@@ -8,10 +8,10 @@ const LOG_LEVELS = ['verbose', 'debug', 'info', 'warn', 'error'];
 let loggerInst = null;
 
 /**
- * @type {Object.<Log>}
+ * @type {Object.<string, Module>}
  * @private
  */
-const __logs = {};
+const __modules = {};
 
 /**
  * @type {Array.<Object>}
@@ -30,7 +30,7 @@ const __filters = [];
  * @property {string} level Level of event
  * @property {string} name Module name with send log event
  * @property {string} message Message of log event
- * @property {Array.<any>} event.arguments Extended info
+ * @property {Array.<any>} arguments Extended info
  */
 
 
@@ -48,35 +48,46 @@ class Zerg {
 
 
     /**
-     * Create named Log instance
-     * @param {string} loggerName - Name for log function
-     * @return {Log} - Instance Log function
+     * Create named Module instance
+     * @param {string} moduleName - Name for log function
+     * @return {Module} - Instance Module
      */
-    create(loggerName) {
-        let log = this.getLog(loggerName);
-        if (log === false) {
-            log = new Log(loggerName);
-            this.__addLog(log);
+    module(moduleName) {
+        let module = this.getModule(moduleName);
+        if (module === false) {
+            module = new Module(moduleName);
+            this.__addModule(module);
         } else {
-            log = this.getLog(loggerName);
+            module = this.getModule(moduleName);
         }
 
-        return log;
+        return module;
+    }
+
+    /**
+     * @param {string} moduleName - Name of Module
+     * @returns {Module|boolean} - module instance or false if not exist
+     */
+    getModule(moduleName) {
+        return __modules[moduleName] || false;
     }
 
 
-    getLog(logName) {
-        return __logs[logName] || false;
+    /**
+     * @param {Module} module - instance Module
+     * @private
+     * @return {undefined}
+     */
+    __addModule(module) {
+        __modules[module.name] = module;
     }
 
 
-    __addLog(log) {
-        __logs[log.name] = log;
-    }
-
-
-    getLogs() {
-        return __logs;
+    /**
+     * @returns {Object.<string, Module>} - all registered modules
+     */
+    getModules() {
+        return __modules;
     }
 
 
@@ -161,7 +172,7 @@ class Zerg {
 
     /**
      * Master function creating LogObject
-     * @param {string} moduleName - Log module name
+     * @param {string} moduleName - Module module name
      * @param {string} level - Level of log
      * @param {string} message - Message of log
      * @param {Array.<any>} args - Extended info
@@ -185,7 +196,7 @@ class Zerg {
 /**
  * Zerg module
  */
-class Log {
+class Module {
     constructor(loggerName) {
         this.name = loggerName;
 

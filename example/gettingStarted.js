@@ -2,7 +2,7 @@
 const zerg = require('zerg');
 
 // create log function for module
-const log = zerg.create('myAppModule');
+const log = zerg.module('myAppModule');
 
 // usage
 log.verbose('log verbose message');
