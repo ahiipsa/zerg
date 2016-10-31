@@ -36,7 +36,7 @@ const handler = function (logObject) {
     const style = map[logObject.level];
     const message = style(`[${logObject.name}]`) + ' ' + logObject.message;
     const args = [message].concat(logObject.arguments);
-    console.log.apply(console, args);
+    console.log(...args);
 };
 
 handler.styles = styles;
