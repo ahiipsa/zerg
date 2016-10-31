@@ -5,8 +5,8 @@ const zerg = require('zerg');
 const log = zerg.module('myAppModule');
 
 // usage
-log.verbose('log verbose message');
-log.debug('log debug message');
-log.info('log info message', 10);
-log.warn('log warn message', false);
-log.error('log error message', {message: 'something wrong'});
+log.verbose('verbose message');
+log.debug('debug message');
+log.info('info message', 10);
+log.warn('warn message', false);
+log.error('error message', {foo: 'bar'});
