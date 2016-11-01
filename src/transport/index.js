@@ -1,4 +1,4 @@
 'use strict';
 
-var console = require('./console');
+const console = require('./console');
 module.exports = {console};
