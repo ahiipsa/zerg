@@ -10,11 +10,12 @@ zerg.enable = filters.whiteList.enable;
 zerg.addTransport(transport.console);
 
 /**
- * @param {object} options - for config
- * @param {boolean} options.console - disable/enable console transport
+ * @param {object} opt - for config
+ * @param {boolean} opt.console - disable/enable console transport
  * @return {undefined}
  */
-zerg.config = (options) => {
+zerg.config = (opt) => {
+    const options = Object.assign({}, opt || {});
     if ({}.hasOwnProperty.call(options, 'console')) {
 
         zerg.removeTransport(transport.console);

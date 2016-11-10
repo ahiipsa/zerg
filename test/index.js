@@ -1,18 +1,20 @@
 'use strict';
 
 /* eslint no-console: "off", no-empty-function: "off", global-require: "off", no-unused-expressions
-: off, no-process-env: "off"*/
+: off, no-process-env: "off", max-lines: "off"*/
 
 var afterEach = require('mocha').afterEach,
     assert = require('chai').assert,
     beforeEach = require('mocha').beforeEach,
     chai = require('chai'),
+    consoleBrowserTransport = require('../src/transport/consoleBrowser'),
     describe = require('mocha').describe,
     it = require('mocha').it,
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
     transport = require('../src/transport'),
     zerg = require('../src/index.js');
+
 
 chai.use(sinonChai);
 chai.should();
@@ -25,6 +27,9 @@ var units = [
     'broodling', 'infested terran', 'infested colonist', 'infested marine', 'aberration'
 ];
 */
+
+const consoleLogOrigin = console.log;
+const consoleLogFake = () => {};
 
 describe('logger', function () {
 
@@ -69,6 +74,14 @@ describe('logger', function () {
     });
 
     describe('transport', function () {
+
+        beforeEach(function () {
+            console.log = consoleLogFake;
+        });
+
+        afterEach(function () {
+            console.log = consoleLogOrigin;
+        });
 
         it('add new transport', function (done) {
             let overseer = zerg.module('overseer');
@@ -161,11 +174,13 @@ describe('logger', function () {
     describe('console transport', function () {
 
         beforeEach(function () {
+            console.log = consoleLogFake;
             sinon.spy(console, 'log');
         });
 
         afterEach(function () {
             console.log.restore();
+            console.log = consoleLogOrigin;
         });
 
         it('console transport', function () {
@@ -179,6 +194,38 @@ describe('logger', function () {
             console.log.should.have.been.calledOnce.calledWith(_message, 0, true);
         });
 
+        it('console browser style', function () {
+            const logObject = {
+                timestamp: Date.now(),
+                level: 'info',
+                name: 'testStyle',
+                message: 'some string',
+                arguments: [1, '123']
+            };
+
+            consoleBrowserTransport(logObject);
+            const message = `%c[${logObject.name}]%c ${logObject.message}`;
+            const styleInfo = 'color: green; font-weight: bold;';
+            const resetStyle = 'color: inherit; font-weight: inherit;';
+
+            console.log.
+                should.have.been.calledOnce.
+                calledWith(message, styleInfo, resetStyle, logObject.arguments[0], logObject.arguments[1]);
+        });
+
+        it('console browser require', function () {
+            transport.console.should.not.equal(consoleBrowserTransport);
+
+            global.window = true;
+            delete require.cache[require.resolve('../src/transport')];
+            transport = require('../src/transport');
+            transport.console.should.equal(consoleBrowserTransport);
+
+            delete global.window;
+            delete require.cache[require.resolve('../src/transport')];
+            transport = require('../src/transport');
+        });
+
         it('console transport disable/enable', function () {
             zerg.config({console: false});
             zerg.module('disableConsoleTransport').info('disable');
@@ -187,6 +234,8 @@ describe('logger', function () {
             zerg.config({console: true});
             zerg.module('disableConsoleTransport').info('enable');
             console.log.should.have.been.called.once;
+
+            zerg.config.should.not.throw();
         });
 
         it('disable', function () {
