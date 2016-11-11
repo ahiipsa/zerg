@@ -9,6 +9,7 @@ var afterEach = require('mocha').afterEach,
     chai = require('chai'),
     consoleBrowserTransport = require('../src/transport/consoleBrowser'),
     describe = require('mocha').describe,
+    expect = require('chai').expect,
     it = require('mocha').it,
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
@@ -77,6 +78,8 @@ describe('logger', function () {
 
         beforeEach(function () {
             console.log = consoleLogFake;
+            zerg.removeAllTransports();
+            zerg.config({console: true});
         });
 
         afterEach(function () {
@@ -114,6 +117,22 @@ describe('logger', function () {
             let transport = () => true;
             zerg.addTransport(transport);
             zerg.removeTransport(transport);
+        });
+
+        it('remove all transports', () => {
+            const t1 = () => {};
+            const t2 = () => {};
+
+            expect(() => {
+                zerg.removeAllTransports()
+            }).not.throw();
+
+            expect(() => {
+                zerg.removeTransport(t1)
+            }).not.throw;
+            expect(() => {
+                zerg.removeTransport(t2)
+            }).not.throw;
         });
 
         it('delete NOT existing transport', function () {

@@ -17,7 +17,7 @@ const __modules = {};
  * @type {Array.<Object>}
  * @private
  */
-const __transports = [];
+let __transports = [];
 
 /**
  * @type {Array.<function>}
@@ -131,6 +131,11 @@ class Zerg {
                 __transports.splice(i, 1);
             }
         }
+    }
+
+
+    removeAllTransports() {
+        __transports = [];
     }
 
     /**
