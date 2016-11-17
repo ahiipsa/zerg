@@ -1,8 +1,8 @@
 'use strict';
 
-const zerg = require('./core');
-const transport = require('./transport');
-const filters = require('./filters');
+var zerg = require('./core');
+var transport = require('./transport');
+var filters = require('./filters');
 
 zerg.addFilter(filters.whiteList.isEnableModule);
 zerg.enable = filters.whiteList.enable;
@@ -14,8 +14,8 @@ zerg.addTransport(transport.console);
  * @param {boolean} opt.console - disable/enable console transport
  * @return {undefined}
  */
-zerg.config = (opt) => {
-    const options = Object.assign({}, opt || {});
+zerg.config = function (opt) {
+    var options = opt || {};
     if ({}.hasOwnProperty.call(options, 'console')) {
 
         zerg.removeTransport(transport.console);

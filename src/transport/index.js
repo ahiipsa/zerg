@@ -1,11 +1,11 @@
 'use strict';
 
-const consoleNode = require('./consoleNode');
-const consoleBrowser = require('./consoleBrowser');
+var consoleNode = require('./consoleNode');
+var consoleBrowser = require('./consoleBrowser');
 
-let console = consoleNode;
+var console = consoleNode;
 if (typeof window !== 'undefined') {
     console = consoleBrowser;
 }
 
-module.exports = {console};
+module.exports = {console: console};
