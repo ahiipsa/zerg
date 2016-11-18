@@ -1,7 +1,7 @@
 /* eslint no-console: "off" */
 'use strict';
 
-const styles = {
+var styles = {
     verbose: 'color: gray; font-weight: bold;',
     debug: 'color: cornflowerblue; font-weight: bold;',
     info: 'color: green; font-weight: bold;',
@@ -15,9 +15,9 @@ const styles = {
  * @param {LogObject} logObject - {@link LogObject}
  * @returns {undefined}
  */
-const handler = function(logObject) {
-    const messageString = `%c[${logObject.name}]%c ${logObject.message}`;
-    const args = [messageString, styles[logObject.level], styles.reset].concat(logObject.arguments);
+var handler = function(logObject) {
+    var messageString = '%c[' + logObject.name + ']%c ' + logObject.message;
+    var args = [messageString, styles[logObject.level], styles.reset].concat(logObject.arguments);
 
     console.log.apply(console, args);
 }

@@ -1,24 +1,24 @@
 /* eslint max-statements: ["error", 13], no-process-env: "off" */
 'use strict';
 
-let enableRegExp = new RegExp();
-let disableReqExp = new RegExp();
+var enableRegExp = new RegExp();
+var disableReqExp = new RegExp();
 
-let whiteList = [];
-let blackList = [];
+var whiteList = [];
+var blackList = [];
 
 /**
  * Enable/Disable {@link Module}
  * @param {Array.<string>} modules - List of modules to disable
  * @return {void}
  */
-const enable = function (modules) {
+var enable = function (modules) {
 
     blackList = [];
     whiteList = [];
 
-    for (let i = 0; i < modules.length; i++) {
-        let moduleName = modules[i];
+    for (var i = 0; i < modules.length; i++) {
+        var moduleName = modules[i];
 
         if (moduleName.indexOf('-') === 0) {
             blackList.push(
@@ -32,15 +32,15 @@ const enable = function (modules) {
     }
 
     if (whiteList.length > 0) {
-        enableRegExp = new RegExp(`^(${whiteList.join('|')})$`);
+        enableRegExp = new RegExp('^(' + whiteList.join('|') + ')$');
     }
 
     if (blackList.length > 0) {
-        disableReqExp = new RegExp(`^(${blackList.join('|')})$`);
+        disableReqExp = new RegExp('^(' + blackList.join('|') + ')$');
     }
 };
 
-const isEnableModule = function (logObject) {
+var isEnableModule = function (logObject) {
 
     if (blackList.length && disableReqExp.test(logObject.name)) {
         return false;
