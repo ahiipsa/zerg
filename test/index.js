@@ -74,6 +74,70 @@ describe('logger', function () {
         assert.isFunction(overlord.error, 'has error method');
     });
 
+    describe('parseRule', function () {
+        it('enable all', function() {
+            var rule = {
+                moduleName: '*',
+                namespace: false,
+                enable: true
+            };
+
+            expect(zerg.parseRule('*')).eql(rule);
+            expect(zerg.parseRule('')).eql(rule);
+            expect(zerg.parseRule()).eql(rule);
+        });
+
+        it('disable all', function () {
+            var rule = {
+                moduleName: '-',
+                namespace: false,
+                enable: true
+            };
+
+            expect(zerg.parseRule('-')).eql(rule);
+        });
+
+        it('enable module', function () {
+            var rule = {
+                moduleName: 'db',
+                namespace: false,
+                enable: true
+            };
+
+            expect(zerg.parseRule('db')).eql(rule);
+        });
+
+        it('disable module', function () {
+            var rule = {
+                moduleName: 'db',
+                namespace: false,
+                enable: false
+            };
+
+            expect(zerg.parseRule('-db')).eql(rule);
+        });
+
+        it('enable module namespace', function () {
+            var rule = {
+                moduleName: 'db',
+                namespace: true,
+                enable: true
+            };
+
+            expect(zerg.parseRule('db*')).eql(rule);
+        });
+
+        it('disable module namespace', function () {
+            var rule = {
+                moduleName: 'db',
+                namespace: true,
+                enable: false
+            };
+
+            expect(zerg.parseRule('-db*')).eql(rule);
+        });
+    });
+
     describe('transport', function () {
 
         beforeEach(function () {
@@ -314,6 +378,19 @@ describe('logger', function () {
             zerg.module('locust').info('locust logging');
 
             console.log.should.have.been.calledThrice;
+        });
+
+        it('disable with minus', function () {
+            zerg.enable(['-']);
+
+            zerg.module('queen:1').info('some string');
+            zerg.module('queen:2').info('some string');
+            zerg.module('queen:3').info('some string');
+
+            zerg.module('swarm host').info('swarm host here');
+            zerg.module('locust').info('locust logging');
+
+            console.log.should.not.have.been.called;
         });
 
     });

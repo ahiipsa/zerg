@@ -20,9 +20,10 @@ var __modules = {};
 var __transports = [];
 
 /**
- * @type {Array.<function>}
+ * @type {Array}
+ * @private
  */
-var __filters = [];
+var __enableRules = [];
 
 /**
  * @typedef {Object} LogObject
@@ -32,7 +33,6 @@ var __filters = [];
  * @property {string} message - Message of log event
  * @property {Array.<any>} arguments - Extended info
  */
-
 
 /**
  * @callback transportCallback
@@ -53,14 +53,107 @@ var Zerg = function () {
  */
 Zerg.prototype.module = function(moduleName) {
     var module = this.getModule(moduleName);
-    if (module === false) {
+
+    if (!module) {
         module = new Module(moduleName);
+        module.enable = this.isModuleEnable(module);
         this.__addModule(module);
-    } else {
-        module = this.getModule(moduleName);
     }
 
     return module;
+}
+
+/**
+ * @typedef {Object} Rule
+ * @property {string} moduleName
+ * @property {boolean} namespace
+ * @property {boolean} enable
+ */
+
+/**
+ * @param {string} string - rule string
+ * @returns {Rule} rule for module
+ */
+Zerg.prototype.parseRule = function (string) {
+    var isEnable = true;
+    var isNameSpace = false;
+    var moduleName = string;
+
+    if (!moduleName) {
+        moduleName = '*';
+    }
+
+    if (moduleName.length !== 1 && moduleName[0] === '-') {
+        isEnable = false;
+        moduleName = moduleName.substring(1);
+    }
+
+    if (moduleName.length !== 1 && moduleName[moduleName.length - 1] === '*') {
+        isNameSpace = true;
+        moduleName = moduleName.substring(0, moduleName.length - 1)
+    }
+
+    return {
+        moduleName: moduleName,
+        namespace: isNameSpace,
+        enable: isEnable
+    }
+}
+
+/**
+ * @param {Array.<string>} rules
+ * @returns {undefined}
+ */
+Zerg.prototype.enable = function (rules) {
+    __enableRules = [];
+    var rulesLen = rules.length;
+    for (var ri = 0; ri < rulesLen; ri++) {
+        var rule = this.parseRule(rules[ri]);
+        __enableRules.push(rule);
+    }
+
+    var modules = loggerInst.getModules();
+    var self = this;
+
+    Object.keys(modules).forEach(function (name) {
+        var module = modules[name];
+        module.enable = self.isModuleEnable(module);
+    });
+};
+
+
+/**
+ * @param {Module} module
+ * @returns {boolean} - is module enable
+ */
+Zerg.prototype.isModuleEnable = function (module) {
+    var rulesCount = __enableRules.length;
+
+    if (!rulesCount) {
+        return true;
+    }
+
+    for (var i = 0; i < rulesCount; i++) {
+        var rule = __enableRules[i];
+
+        if (rule.moduleName === '*') {
+            return true;
+        }
+
+        if (rule.moduleName === '-') {
+            return false;
+        }
+
+        if (rule.namespace && module.name.indexOf(rule.moduleName) === 0) {
+            return rule.enable;
+        }
+
+        if (!rule.namespace && rule.moduleName === module.name) {
+            return rule.enable;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -137,14 +230,6 @@ Zerg.prototype.removeAllTransports = function() {
     __transports = [];
 }
 
-/**
- * @param {function} fn - filtered function
- * @returns {undefined}
- */
-Zerg.prototype.addFilter = function(fn) {
-    __filters.push(fn);
-}
-
 
 /**
  * Propagation event for transport
@@ -153,16 +238,7 @@ Zerg.prototype.addFilter = function(fn) {
  * @returns {boolean} result
  */
 Zerg.prototype.__emit = function(logInfo) {
-    var filterCount = __filters.length;
     var subscriberCount = __transports.length;
-
-    for (var fi = 0; fi < filterCount; fi++) {
-        var filter = __filters[fi];
-
-        if (!filter(logInfo)) {
-            return false;
-        }
-    }
 
     for (var i = 0; i < subscriberCount; i++) {
         var subscriber = __transports[i];
@@ -204,9 +280,13 @@ Zerg.prototype.__log = function(moduleName, level, message, args) {
 var Module = function(loggerName) {
     var self = this;
     self.name = loggerName;
+    self.enable = true;
 
     LOG_LEVELS.forEach(function (level) {
         self[level] = function (message) {
+            if (!self.enable) {
+                return;
+            }
             var args = Array.prototype.slice.call(arguments, 1);
             loggerInst.__log(self.name, level, message, args);
         }
