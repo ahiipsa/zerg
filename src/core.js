@@ -20,12 +20,6 @@ var __modules = {};
 var __transports = [];
 
 /**
- * @type {Array.<function>}
- */
-var __filters = [];
-
-/**
- *
  * @type {Array}
  * @private
  */
@@ -39,7 +33,6 @@ var __enableRules = [];
  * @property {string} message - Message of log event
  * @property {Array.<any>} arguments - Extended info
  */
-
 
 /**
  * @callback transportCallback
@@ -70,7 +63,17 @@ Zerg.prototype.module = function(moduleName) {
     return module;
 }
 
+/**
+ * @typedef {Object} Rule
+ * @property {string} moduleName
+ * @property {boolean} namespace
+ * @property {boolean} enable
+ */
 
+/**
+ * @param {string} string - rule string
+ * @returns {Rule} rule for module
+ */
 Zerg.prototype.parseRule = function (string) {
     var isEnable = true;
     var isNameSpace = false;
@@ -97,7 +100,10 @@ Zerg.prototype.parseRule = function (string) {
     }
 }
 
-
+/**
+ * @param {Array.<string>} rules
+ * @returns {undefined}
+ */
 Zerg.prototype.enable = function (rules) {
     __enableRules = [];
     var rulesLen = rules.length;
@@ -116,6 +122,10 @@ Zerg.prototype.enable = function (rules) {
 };
 
 
+/**
+ * @param {Module} module
+ * @returns {boolean} - is module enable
+ */
 Zerg.prototype.isModuleEnable = function (module) {
     var rulesCount = __enableRules.length;
 
@@ -220,14 +230,6 @@ Zerg.prototype.removeAllTransports = function() {
     __transports = [];
 }
 
-/**
- * @param {function} fn - filtered function
- * @returns {undefined}
- */
-Zerg.prototype.addFilter = function(fn) {
-    __filters.push(fn);
-}
-
 
 /**
  * Propagation event for transport
@@ -236,16 +238,7 @@ Zerg.prototype.addFilter = function(fn) {
  * @returns {boolean} result
  */
 Zerg.prototype.__emit = function(logInfo) {
-    var filterCount = __filters.length;
     var subscriberCount = __transports.length;
-
-    for (var fi = 0; fi < filterCount; fi++) {
-        var filter = __filters[fi];
-
-        if (!filter(logInfo)) {
-            return false;
-        }
-    }
 
     for (var i = 0; i < subscriberCount; i++) {
         var subscriber = __transports[i];

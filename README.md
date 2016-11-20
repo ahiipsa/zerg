@@ -46,7 +46,16 @@ result:
 
 ### Enable/Disable module
 
-you can disable some log by module name, example:
+you can disable some log by module name
+ 
+* `moduleName` - enable module
+* `-moduleName` - disable module
+* `moduleName*` - enable module namespace
+* `-moduleName*` - disable module namespace
+* `*` - enable all
+* `-` - disable all
+
+examples:
 
 ```js
 
