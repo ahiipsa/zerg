@@ -2,10 +2,6 @@
 
 var zerg = require('./core');
 var transport = require('./transport');
-var filters = require('./filters');
-
-zerg.addFilter(filters.whiteList.isEnableModule);
-zerg.enable = filters.whiteList.enable;
 
 zerg.addTransport(transport.console);
 
