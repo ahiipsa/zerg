@@ -5,7 +5,7 @@ var LOG_LEVELS = ['verbose', 'debug', 'info', 'warn', 'error'];
 /**
  * @type {Zerg}
  */
-var loggerInst = null;
+var zergInstance = null;
 
 /**
  * @type {Object.<string, Module>}
@@ -43,7 +43,7 @@ var __enableRules = [];
  * @constructor
  */
 var Zerg = function () {
-    loggerInst = this;
+    zergInstance = this;
 };
 
 /**
@@ -112,7 +112,7 @@ Zerg.prototype.enable = function (rules) {
         __enableRules.push(rule);
     }
 
-    var modules = loggerInst.getModules();
+    var modules = zergInstance.getModules();
     var self = this;
 
     Object.keys(modules).forEach(function (name) {
@@ -128,6 +128,7 @@ Zerg.prototype.enable = function (rules) {
  */
 Zerg.prototype.isModuleEnable = function (module) {
     var rulesCount = __enableRules.length;
+    var byDefault = false;
 
     if (!rulesCount) {
         return true;
@@ -135,6 +136,11 @@ Zerg.prototype.isModuleEnable = function (module) {
 
     for (var i = 0; i < rulesCount; i++) {
         var rule = __enableRules[i];
+
+        // if only disable rules, enable module by default
+        if (!byDefault && !rule.enable) {
+            byDefault = true;
+        }
 
         if (rule.moduleName === '*') {
             return true;
@@ -153,7 +159,7 @@ Zerg.prototype.isModuleEnable = function (module) {
         }
     }
 
-    return false;
+    return byDefault;
 }
 
 /**
@@ -288,7 +294,7 @@ var Module = function(loggerName) {
                 return;
             }
             var args = Array.prototype.slice.call(arguments, 1);
-            loggerInst.__log(self.name, level, message, args);
+            zergInstance.__log(self.name, level, message, args);
         }
     });
 };

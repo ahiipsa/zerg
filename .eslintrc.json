@@ -82,7 +82,7 @@
         "lines-around-comment": "error",
         "max-depth": "error",
         "max-len": "off",
-        "max-lines": "error",
+        "max-lines": ["error",  {"skipComments": true}],
         "max-nested-callbacks": "error",
         "max-params": "off",
         "max-statements": "off",
