@@ -240,6 +240,7 @@ Zerg.prototype.removeAllTransports = function() {
 Zerg.prototype.__emit = function(logInfo) {
     var subscriberCount = __transports.length;
 
+
     for (var i = 0; i < subscriberCount; i++) {
         var subscriber = __transports[i];
         if (subscriber.levels.indexOf(logInfo.level) > -1) {
@@ -282,15 +283,19 @@ var Module = function(loggerName) {
     self.name = loggerName;
     self.enable = true;
 
-    LOG_LEVELS.forEach(function (level) {
-        self[level] = function (message) {
-            if (!self.enable) {
-                return;
+    try {
+        LOG_LEVELS.forEach(function (level) {
+            self[level] = function (message) {
+                if (!self.enable) {
+                    return;
+                }
+                var args = Array.prototype.slice.call(arguments, 1);
+                loggerInst.__log(self.name, level, message, args);
             }
-            var args = Array.prototype.slice.call(arguments, 1);
-            loggerInst.__log(self.name, level, message, args);
-        }
-    });
+        });
+    } catch (e) {
+        console.error('Transport exception occurred', e);
+    }
 };
 
 module.exports = new Zerg();
