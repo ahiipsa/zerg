@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * @type {Zerg}
+ */
 var zerg = require('./core');
 var transport = require('./transport');
 
