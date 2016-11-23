@@ -1,3 +1,6 @@
+/* eslint no-console: "off" */
+'use strict';
+
 const zerg = require('zerg');
 
 const log = zerg.module('mySupperModule');

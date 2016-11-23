@@ -1,3 +1,5 @@
+'use strict';
+
 // setup
 const zerg = require('zerg');
 
