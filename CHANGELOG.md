@@ -1,5 +1,5 @@
 ## 1.7.0 (November 24, 2016)
-- Fixed bud with zerg.enable(['-moduleName']), had to disable only single module
+- Fixed bud with zerg.enable(['-moduleName']), it should disable only one module
 - Prettified tests
 
 ## 1.6.0 (November 21, 2016)
