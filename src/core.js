@@ -1,6 +1,6 @@
 'use strict';
 
-var LOG_LEVELS = ['verbose', 'debug', 'info', 'warn', 'error'];
+var LOG_LEVELS = require('./util').LOG_LEVELS;
 
 /**
  * @type {Zerg}

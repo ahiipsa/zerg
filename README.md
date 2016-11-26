@@ -108,6 +108,14 @@ zerg.module('dis').info('enable');
 
 ```
 
+enable only specified levels
+
+```
+const zerg = require('zerg');
+
+zerg.config({consoleLevels: ['info', 'error']});
+```
+
 ### Custom transport
 
 

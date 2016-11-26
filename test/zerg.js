@@ -3,7 +3,8 @@
 /* eslint
     no-console: "off",
     no-unused-expressions: "off",
-    no-empty-function: "off"
+    no-empty-function: "off",
+    max-lines: "off"
 */
 
 var afterEach = require('mocha').afterEach;
@@ -293,7 +294,19 @@ describe('zerg', function () {
         it('should not throw error', function () {
             expect(zerg.config).not.throws();
         });
+
+        it('should transport only info level', function () {
+            zerg.config({
+                console: true,
+                consoleLevels: ['info']
+            });
+
+            zerg.module('myModule').verbose('verbose message');
+            zerg.module('myModule').debug('debug message');
+            zerg.module('myModule').info('info message');
+            zerg.module('myModule').warn('warn message');
+            zerg.module('myModule').error('error message');
+            expect(console.log).calledOnce.calledWithMatch(/info message/);
+        })
     });
 });
-
-
