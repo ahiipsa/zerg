@@ -1,3 +1,6 @@
+## 1.8.0 (Novemver 27. 2016)
+- Added ability to specify levels logging for console transport
+
 ## 1.7.0 (November 24, 2016)
 - Fixed bud with zerg.enable(['-moduleName']), it should disable only one module
 - Prettified tests
