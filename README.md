@@ -152,7 +152,7 @@ result:
 
 ```
 
-You can create your self transport for level, modules, environments
+You can create transport for level, modules, environments
 when is needed:
 
 ```js
