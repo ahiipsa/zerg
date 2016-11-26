@@ -110,7 +110,7 @@ zerg.module('dis').info('enable');
 
 enable only specified levels
 
-```
+```js
 const zerg = require('zerg');
 
 zerg.config({consoleLevels: ['info', 'error']});
