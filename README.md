@@ -12,6 +12,7 @@ lightweight logging library for apps and libs
 - modularity 
 - custom transports
 - zero dependencies
+- support Node.js and browser
 
 
 ## Getting started
@@ -168,5 +169,35 @@ const myCustomTransport = (logObject) => {
 zerg.addTransport(myCustomTransport);
 
 log.info('create staff', {foo: 'bar'});
+
+```
+
+## Examples
+
+### [Sentry](http://sentry.io) transport
+
+```js
+
+const SENTRY_LEVEL_MAP = {
+    info: 'info',
+    warn: 'warning',
+    error: 'error',
+    fatal: 'error',
+};
+
+function sentryTransport(logObject) {
+    const level = SENTRY_LEVEL_MAP[logObject.level];
+    const additionalData = {
+        level: level,
+        logger: logObject.name,
+        extra: {
+            arguments: logObject.arguments
+        }
+    }
+    
+    Raven.captureMessage(logObject.message, additionalData);
+}
+
+zerg.addTransport(sentryTransport, ['warn', 'error']);
 
 ```
