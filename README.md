@@ -112,9 +112,11 @@ zerg.module('dis').info('enable');
 enable only specified levels
 
 ```js
+
 const zerg = require('zerg');
 
 zerg.config({consoleLevels: ['info', 'error']});
+
 ```
 
 ### Custom transport
@@ -199,5 +201,45 @@ function sentryTransport(logObject) {
 }
 
 zerg.addTransport(sentryTransport, ['warn', 'error']);
+
+```
+
+### Remote debug transport
+
+It is be useful for debug when browser (or device) doesn't provide tool: Android with default browser, WinPhone, SmartTV.
+
+In browser:
+
+```js
+
+function remoteTransport(logObject) {
+    const req = new XMLHttpRequest();
+    req.open('POST', 'http://myhost.com:3000/log', false);
+    req.setRequestHeader('Content-type', 'application/json');
+    req.send(JSON.stringify(logObject));
+}
+
+zerg.addTransport(remoteTransport);
+
+```
+
+_Don't forget, host (http://myhost.com:3000/log) must be reachable from device._
+
+
+On server you may use [express](https://www.npmjs.com/package/express):
+
+```js
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json()); // for parsing application/json
+
+app.post('/log', (req, res) => {
+    console.log(req.body);
+});
+
+app.listen(3000);
 
 ```
