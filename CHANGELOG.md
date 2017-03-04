@@ -1,3 +1,6 @@
+## 1.8.1 (March 4, 2017)
+- Updated README.md
+
 ## 1.8.0 (November 27, 2016)
 - Added ability to specify levels logging for console transport
 
