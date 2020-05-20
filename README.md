@@ -10,9 +10,10 @@ lightweight logging library for apps and libs
 ## Futures
 
 - modularity 
-- custom transports
+- custom listeners/transports
 - zero dependencies
 - support Node.js and browser
+- TypeScript support
 
 
 ## Getting started
@@ -27,15 +28,20 @@ lightweight logging library for apps and libs
 
 // setup
 const zerg = require('zerg');
+const {consoleNodeColorful, consoleBrowserColorful} = requure('zerg/transports');
+const logger = zerg.createLogger();
+logger.addListener(consoleNodeColorful);
+// OR for browser
+logger.addListener(consoleBrowserColorful);
 
 // create log function for module
-const log = zerg.module('myAppModule');
+const log = logger.module('myAppModule');
 
 // usage
 log.verbose('verbose message');
 log.debug('debug message');
-log.info('info message', 10);
-log.warn('warn message', false);
+log.info('info message');
+log.warn('warn message');
 log.error('error message', {foo: 'bar'});
 
 ```
@@ -99,11 +105,11 @@ disable/enable
 const zerg = require('zerg');
 zerg.module('dis').info('enable');
 
-// disable console transport
+// disable console transports
 zerg.config({console: false});
 zerg.module('dis').info('disable');
 
-// enable console transport
+// enable console transports
 zerg.config({console: true});
 zerg.module('dis').info('enable');
 

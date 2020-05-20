@@ -2,7 +2,7 @@
 
 /* eslint no-console: "off", no-empty-function: "off" */
 
-const zerg = require('../src');
+const zerg = require('src');
 
 const demos = [
     'drone', 'overlord', 'overseer', 'changeling', 'zergling', 'baneling', 'roach', 'ravager', 'hydralisk',

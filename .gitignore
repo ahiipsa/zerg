@@ -1,8 +1,6 @@
 .idea
 .DS_Store
+dist
 node_modules
-bower_components
-test.js
-config/local.json
 npm-debug.log
 coverage

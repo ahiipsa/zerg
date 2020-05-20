@@ -8,7 +8,7 @@ lint:
 
 .PHONY: test
 test:
-	@$(NPM_BIN)/mocha $(TEST_SPEC)
+	yarn test
 
 .PHONY: test-ci
 test-ci:
