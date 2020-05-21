@@ -7,10 +7,16 @@ const styles = {
   info: 'color: green; font-weight: bold;',
   error: 'color: red; font-weight: bold;',
   warn: 'color: orange; font-weight: bold;',
-  reset: 'color: inherit; font-weight: inherit;'
+  reset: 'color: inherit; font-weight: inherit;',
 };
 
 export function consoleBrowserColorful(logObject: TLogMessage) {
-  const messageString = '%c[' + logObject.moduleName + ']%c ' + logObject.message;
-  console.log(messageString, styles[logObject.level], styles.reset, logObject.extendedData);
+  const messageString =
+    '%c[' + logObject.moduleName + ']%c ' + logObject.message;
+  console.log(
+    messageString,
+    styles[logObject.level],
+    styles.reset,
+    logObject.extendedData
+  );
 }

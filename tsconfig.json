@@ -10,9 +10,5 @@
     "sourceMap": true,
     "rootDir": "./src"
   },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test"
-  ]
+  "exclude": ["node_modules", "dist", "test"]
 }

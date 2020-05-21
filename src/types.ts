@@ -7,14 +7,19 @@ export type TLogMessage = {
   moduleName: string;
   level: TLogLevels;
   message: string;
-  extendedData?: TExtendedData
+  extendedData?: TExtendedData;
 };
 
-export type TLogFunction = (moduleName: string, level: TLogLevels, message: string, extendedData?: TExtendedData) => void;
+export type TLogFunction = (
+  moduleName: string,
+  level: TLogLevels,
+  message: string,
+  extendedData?: TExtendedData
+) => void;
 
 export type TListener = (log: TLogMessage) => void;
 
 export type TListenerItem = {
   callback: TListener;
   levels: TLogLevels[];
-}
+};

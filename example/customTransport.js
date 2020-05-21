@@ -6,8 +6,8 @@ const zerg = require('zerg');
 const log = zerg.module('mySupperModule');
 
 const myCustomTransport = function (logObject) {
-    // do something with logObject
-    console.dir(logObject);
+  // do something with logObject
+  console.dir(logObject);
 };
 
 zerg.addTransport(myCustomTransport, ['error', 'warn']);

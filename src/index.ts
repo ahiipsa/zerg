@@ -6,5 +6,5 @@ const createLogger = () => {
 };
 
 export default {
-  createLogger
-}
+  createLogger,
+};

@@ -2,9 +2,10 @@ import LoggerModule from './LoggerModule';
 import {
   TListenerItem,
   TLogLevels,
-  TLogMessage, TListener, TExtendedData
+  TLogMessage,
+  TListener,
+  TExtendedData,
 } from './types';
-
 
 class Logger {
   private __listeners: TListenerItem[] = [];
@@ -41,7 +42,9 @@ class Logger {
   }
 
   removeListener(callback: TListener) {
-    this.__listeners = this.__listeners.filter((listener) => listener.callback !== callback);
+    this.__listeners = this.__listeners.filter(
+      (listener) => listener.callback !== callback
+    );
   }
 
   removeAllListeners() {
@@ -64,13 +67,18 @@ class Logger {
     });
   };
 
-  __log = (moduleName: string, level: TLogLevels, message: string, extendedData?: TExtendedData) => {
+  __log = (
+    moduleName: string,
+    level: TLogLevels,
+    message: string,
+    extendedData?: TExtendedData
+  ) => {
     const logMessage = {
       timestamp: Date.now(),
       level: level,
       moduleName: moduleName,
       message: message,
-      extendedData
+      extendedData,
     };
 
     this.__emit(logMessage);
