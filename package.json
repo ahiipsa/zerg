@@ -1,6 +1,6 @@
 {
   "name": "zerg",
-  "version": "2.0.0-beta",
+  "version": "2.0.0-beta1",
   "description": "lightweight logging library for apps and libs",
   "keywords": [
     "log",
