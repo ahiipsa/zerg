@@ -5,231 +5,234 @@
 
 # Zerg
 
-lightweight logging library for apps and libs
+Lightweight logging library for apps and libs
 
 ## Futures
 
-- modularity 
-- custom transports
-- zero dependencies
-- support Node.js and browser
-
+- Zero dependencies
+- TypeScript support
+- Easy to use
+- Custom listeners/transports
+- Support Node.js and Browsers
 
 ## Getting started
 
-### Install
+### Installation
 
-`npm i zerg --save`
+`npm i --save zerg`
 
-### Setup
+or
+
+`yarn add zerg`
+
+### Usage
+
+Make module `logger.js`:
 
 ```js
+import zerg from 'zerg';
+import {
+  consoleNodeColorful,
+  consoleBrowserColorful,
+} from 'zerg/dist/transports';
 
-// setup
-const zerg = require('zerg');
+const logger = zerg.createLogger();
 
-// create log function for module
-const log = zerg.module('myAppModule');
+// Add console logger
+const listener = zerg.createListener({
+  handler: consoleBrowserColorful, // for browser
+  // handler: consoleNodeColorful, // for node
+});
 
-// usage
-log.verbose('verbose message');
-log.debug('debug message');
-log.info('info message', 10);
-log.warn('warn message', false);
-log.error('error message', {foo: 'bar'});
+logger.addListener(listener);
 
+export default logger;
 ```
 
-result:
+Make your module and import `logger.js`:
+
+```js
+import logger from './logger';
+
+const log = logger('moduleName');
+
+log.verbose('verbose message');
+log.debug('debug message');
+log.info('info message');
+log.warn('warn message');
+log.error('error message', {foo: 'bar'});
+```
+
+Result:
 
 ![ScreenShot](https://raw.github.com/ahiipsa/zerg/master/example/example.png)
 
+## API
 
-### Enable/Disable module
-
-you can disable some log by module name
- 
-* `moduleName` - enable module
-* `-moduleName` - disable module
-* `moduleName*` - enable module namespace
-* `-moduleName*` - disable module namespace
-* `*` - enable all
-* `-` - disable all
-
-examples:
-
-```js
-
-// bootstrap.js
-const zerg = require('zerg');
-
-// enable log only for api
-zerg.enable(['api']);
-
-// or use wildcard
-zerg.enable(['api*']);
-
-// disable log for api
-zerg.enable(['-api']);
-// or use wildcard
-zerg.enable(['-api*']);
-
-// combination
-zerg.enable(['perfix:*', 'api', '-db', '-http']);
-
-// src/api.js
-const zerg = require('zerg');
-const log = zerg.module('api');
-
-
-// src/db.js
-const zerg = require('zerg');
-const log = zerg.module('db');
+### Types
 
 ```
-
-## Transports
-
-### Console transport
-
-disable/enable
-
-```js
-
-const zerg = require('zerg');
-zerg.module('dis').info('enable');
-
-// disable console transport
-zerg.config({console: false});
-zerg.module('dis').info('disable');
-
-// enable console transport
-zerg.config({console: true});
-zerg.module('dis').info('enable');
-
+type TExtendedData = Record<string, any>;
 ```
 
-enable only specified levels
-
-```js
-
-const zerg = require('zerg');
-
-zerg.config({consoleLevels: ['info', 'error']});
-
 ```
-
-### Custom transport
-
-
-Simple example for preview data format:
-
-```js
-
-const zerg = require('zerg');
-const log = zerg.module('mySupperModule');
-
-const myCustomTransport = function (logObject) {
-    // do something with logObject
-    console.dir(logObject);
+type TLogMessage = {
+  timestamp: number;
+  moduleName: string;
+  level: TLogLevel;
+  message: string;
+  extendedData?: TExtendedData
 };
-
-
-zerg.addTransport(myCustomTransport, ['error']);
-
-log.error('create staff', true, 1, ['array'], {foo: 'bar'});
-
 ```
 
-result:
+```
+type LogLevel = 'verbose' | 'debug' | 'info' | 'warn' | 'error';
+```
+
+```
+type Listener = (log: TLogMessage) => void;
+```
+
+### zerg.createLogger(): Logger - Create logger instance
+
+### zerg.createListener(params): LogListener - Create listener for logger
+
+- params.handler: (logMessage: TLogMessage) => void;
+- params.filter?: (logMessage: TLogMessage) => boolean; (optional)
+- params.levels?: LogLevel; (optional)
+
+### logger.addListener(listener: LogListener)
 
 ```js
+import zerg from 'zerg';
 
+const logger = zerg.createLogger();
+
+const listener = zerg.createListener({
+  handler: (logMessage) => console.log(logMessage),
+  levels: ['info'], // listen only `info` level
+});
+
+logger.addListener(listener);
+
+logger.module('myModule').info('Info message', {foo: 'bar'});
+logger.module('myModule').warn('Warn message', {bar: 'baz'});
+logger.module('myModule').error('Error message');
+
+/* console
 {
-    timestamp: 1467967421933,
-    level: 'error',
-    name: 'mySuperModule',
-    message: 'create staff',
-    arguments: [ true, 1, [ 'array' ], { foo: 'bar' } ]
+  timestamp: 1467967421933,
+  level: 'info',
+  moduleName: 'myModule',
+  message: 'Info message',
+  extendedData: {foo: 'bar'},
 }
-
+*/
 ```
 
-You can create transport for level, modules, environments
-when is needed:
+Use filter - Listen messages only from "Sarah" module
 
 ```js
+import zerg from 'zerg';
 
-const myCustomTransport = (logObject) => {
-    if(NODE_ENV === 'production' && logObject.level === 'error') {
-        // write to file
-    } else if (NOVE_ENV !== 'production') {
-        // write to console
-    }
+const logger = zerg.createLogger();
+
+const listener = zerg.createListener({
+  handler: (logMessage) => console.log(logMessage),
+  filter: (logMessage) => logMessage.moduleName === 'Sarah', // listen messages only from "Sarah" module
+  // levels: [], // at this case levels are ignoring
+});
+
+logger.addListener(listener);
+
+logger.module('Alice').info('Info message', {foo: 'bar'});
+logger.module('Bob').warn('Warn message', {bar: 'baz'});
+logger.module('Sarah').error('Error message');
+
+/* console
+{
+  timestamp: 1467967421933,
+  level: 'info',
+  moduleName: 'myModule',
+  message: 'Info message',
+  extendedData: {foo: 'bar'},
 }
-
-zerg.addTransport(myCustomTransport);
-
-log.info('create staff', {foo: 'bar'});
-
+*/
 ```
 
-## Examples
+### removeListener(LogListener): void;
+
+### removeAllListeners(): void;
+
+### module(moduleName: string): LoggerModule;
+
+### getModule(moduleName: string): LoggerModule | null;
+
+### getModules(): Record<string, LoggerModule>;
+
+## Other Examples
 
 ### [Sentry](http://sentry.io) transport
 
 ```js
+import zerg from 'zerg';
+const logger = zerg.createLogger();
 
 const SENTRY_LEVEL_MAP = {
-    info: 'info',
-    warn: 'warning',
-    error: 'error',
-    fatal: 'error',
+  info: 'info',
+  warn: 'warning',
+  error: 'error',
+  fatal: 'error',
 };
 
-function sentryTransport(logObject) {
-    const level = SENTRY_LEVEL_MAP[logObject.level];
-    const additionalData = {
-        level: level,
-        logger: logObject.name,
-        extra: {
-            arguments: logObject.arguments
-        }
-    }
-    
-    Raven.captureMessage(logObject.message, additionalData);
+function sentryTransport(logMessage) {
+  const level = SENTRY_LEVEL_MAP[logMessage.level];
+
+  Sentry.withScope((scope) => {
+    scope.setLevel(level);
+
+    Object.keys(logMessage.extendedData).forEach((key) => {
+      scope.setExtra(key, logMessage.extendedData[key]);
+    });
+
+    scope.setTag('module', logMessage.moduleName);
+
+    Sentry.captureMessage(logMessage.message);
+  });
 }
 
-zerg.addTransport(sentryTransport, ['warn', 'error']);
+const listener = zerg.createListener({handler: sentryTransport});
 
+logger.addListener(listener);
 ```
 
 ### Remote debug transport
 
 It is be useful for debug when browser (or device) doesn't provide tool: Android with default browser, WinPhone, SmartTV.
 
-In browser:
+At browser:
 
 ```js
+import zerg from 'zerg';
+const logger = zerg.createLogger();
 
-function remoteTransport(logObject) {
-    const req = new XMLHttpRequest();
-    req.open('POST', 'http://myhost.com:3000/log', false);
-    req.setRequestHeader('Content-type', 'application/json');
-    req.send(JSON.stringify(logObject));
+function remoteTransport(logMessage) {
+  const req = new XMLHttpRequest();
+  req.open('POST', 'http://myhost.com:3000/log', false);
+  req.setRequestHeader('Content-type', 'application/json');
+  req.send(JSON.stringify(logMessage));
 }
 
-zerg.addTransport(remoteTransport);
+const listener = zerg.createListener({handler: remoteTransport});
 
+logger.addListener(listener);
 ```
 
 _Don't forget, host (http://myhost.com:3000/log) must be reachable from device._
 
-
-On server you may use [express](https://www.npmjs.com/package/express):
+At server you may use [express](https://www.npmjs.com/package/express):
 
 ```js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -237,9 +240,8 @@ const app = express();
 app.use(bodyParser.json()); // for parsing application/json
 
 app.post('/log', (req, res) => {
-    console.log(req.body);
+  console.log(req.body);
 });
 
 app.listen(3000);
-
 ```
