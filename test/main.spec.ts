@@ -9,7 +9,7 @@ import {afterEach, describe, it} from 'mocha';
 import chai, {expect} from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import zerg from '../src';
+import zerg from '../dist';
 import {TLogMessage} from '../src/types';
 
 chai.use(sinonChai);

@@ -10,7 +10,7 @@ import {afterEach, describe, it} from 'mocha';
 import chai, {expect} from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {consoleNodeColorful, consoleBrowserColorful} from '../src/transports';
+import {consoleNodeColorful, consoleBrowserColorful} from '../dist/transports';
 import {TLogMessage} from '../src/types';
 
 const consoleLogOrigin = console.log;
