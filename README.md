@@ -38,10 +38,13 @@ import {
 
 const logger = zerg.createLogger();
 
-// Add console logger for node
-logger.addListener(consoleNodeColorful);
-// Or for browsers
-logger.addListener(consoleBrowserColorful);
+// Add console logger
+const listener = zerg.createListener({
+  handler: consoleBrowserColorful, // for browser
+  // handler: consoleNodeColorful, // for node
+});
+
+logger.addListener(listener);
 
 export default logger;
 ```
@@ -76,40 +79,45 @@ type TExtendedData = Record<string, any>;
 type TLogMessage = {
   timestamp: number;
   moduleName: string;
-  level: TLogLevels;
+  level: TLogLevel;
   message: string;
   extendedData?: TExtendedData
 };
 ```
 
 ```
-type LogLevels = 'verbose' | 'debug' | 'info' | 'warn' | 'error';
+type LogLevel = 'verbose' | 'debug' | 'info' | 'warn' | 'error';
 ```
 
 ```
 type Listener = (log: TLogMessage) => void;
 ```
 
-### addListener(callback: Listener, levels?: LogLevels[]): void;
+### zerg.createLogger(): Logger - Create logger instance
 
-- callback - function witch calls to each log message
-- levels - levels for which the function will be called (default: for all levels)
+### zerg.createListener(params): LogListener - Create listener for logger
+
+- params.handler: (logMessage: TLogMessage) => void;
+- params.filter?: (logMessage: TLogMessage) => boolean; (optional)
+- params.levels?: LogLevel; (optional)
+
+### logger.addListener(listener: LogListener)
 
 ```js
 import zerg from 'zerg';
 
 const logger = zerg.createLogger();
 
-// listen only `info` level
-logger.addListener(
-  (logMessage) => {
-    console.log(logMessage);
-  },
-  ['info']
-);
+const listener = zerg.createListener({
+  handler: (logMessage) => console.log(logMessage),
+  levels: ['info'], // listen only `info` level
+});
+
+logger.addListener(listener);
 
 logger.module('myModule').info('Info message', {foo: 'bar'});
 logger.module('myModule').warn('Warn message', {bar: 'baz'});
+logger.module('myModule').error('Error message');
 
 /* console
 {
@@ -122,7 +130,37 @@ logger.module('myModule').warn('Warn message', {bar: 'baz'});
 */
 ```
 
-### removeListener(callback: TListener): void;
+Use filter - Listen messages only from "Sarah" module
+
+```js
+import zerg from 'zerg';
+
+const logger = zerg.createLogger();
+
+const listener = zerg.createListener({
+  handler: (logMessage) => console.log(logMessage),
+  filter: (logMessage) => logMessage.moduleName === 'Sarah', // listen messages only from "Sarah" module
+  // levels: [], // at this case levels are ignoring
+});
+
+logger.addListener(listener);
+
+logger.module('Alice').info('Info message', {foo: 'bar'});
+logger.module('Bob').warn('Warn message', {bar: 'baz'});
+logger.module('Sarah').error('Error message');
+
+/* console
+{
+  timestamp: 1467967421933,
+  level: 'info',
+  moduleName: 'myModule',
+  message: 'Info message',
+  extendedData: {foo: 'bar'},
+}
+*/
+```
+
+### removeListener(LogListener): void;
 
 ### removeAllListeners(): void;
 
@@ -137,6 +175,9 @@ logger.module('myModule').warn('Warn message', {bar: 'baz'});
 ### [Sentry](http://sentry.io) transport
 
 ```js
+import zerg from 'zerg';
+const logger = zerg.createLogger();
+
 const SENTRY_LEVEL_MAP = {
   info: 'info',
   warn: 'warning',
@@ -160,7 +201,9 @@ function sentryTransport(logMessage) {
   });
 }
 
-logger.addListener(sentryTransport);
+const listener = zerg.createListener({handler: sentryTransport});
+
+logger.addListener(listener);
 ```
 
 ### Remote debug transport
@@ -170,6 +213,9 @@ It is be useful for debug when browser (or device) doesn't provide tool: Android
 At browser:
 
 ```js
+import zerg from 'zerg';
+const logger = zerg.createLogger();
+
 function remoteTransport(logMessage) {
   const req = new XMLHttpRequest();
   req.open('POST', 'http://myhost.com:3000/log', false);
@@ -177,7 +223,9 @@ function remoteTransport(logMessage) {
   req.send(JSON.stringify(logMessage));
 }
 
-logger.addListener(remoteTransport);
+const listener = zerg.createListener({handler: remoteTransport});
+
+logger.addListener(listener);
 ```
 
 _Don't forget, host (http://myhost.com:3000/log) must be reachable from device._

@@ -1,4 +1,4 @@
-import {TLogLevels, TExtendedData, TLogFunction} from './types';
+import {TLogLevel, TExtendedData, TLogFunction} from './types';
 
 class LoggerModule {
   name: string;
@@ -9,11 +9,7 @@ class LoggerModule {
     this.__originLog = logFn;
   }
 
-  private log(
-    level: TLogLevels,
-    message: string,
-    extendedData?: TExtendedData
-  ) {
+  private log(level: TLogLevel, message: string, extendedData?: TExtendedData) {
     this.__originLog(this.name, level, message, extendedData);
   }
 

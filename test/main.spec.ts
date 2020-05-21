@@ -10,6 +10,7 @@ import chai, {expect} from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import zerg from '../src';
+import {TLogMessage} from '../src/types';
 
 chai.use(sinonChai);
 
@@ -54,7 +55,9 @@ describe('Zerg', function () {
   describe('logger.addListener', function () {
     it('should add listener', function () {
       const overseer = logger.module('overseer');
-      const listener = sinon.spy();
+
+      const handler = sinon.spy();
+      const listener = zerg.createListener({handler});
 
       logger.addListener(listener);
       overseer.info('some message', {
@@ -64,7 +67,7 @@ describe('Zerg', function () {
         d: [],
         e: {foo: 'bar'},
       });
-      expect(listener).calledOnce.calledWithMatch({
+      expect(handler).calledOnce.calledWithMatch({
         moduleName: 'overseer',
         level: 'info',
         message: 'some message',
@@ -74,8 +77,9 @@ describe('Zerg', function () {
     });
 
     it('should add listeners to levels', function () {
-      const listener = sinon.spy();
-      logger.addListener(listener, ['error']);
+      const handler = sinon.spy();
+      const listener = zerg.createListener({handler, levels: ['error']});
+      logger.addListener(listener);
 
       logger.module('infestor').verbose('some string');
       logger.module('infestor').debug('some string');
@@ -83,26 +87,52 @@ describe('Zerg', function () {
       logger.module('infestor').warn('some string');
       logger.module('infestor').error('some string');
 
-      expect(listener).not.calledWithMatch({level: 'verbose'});
-      expect(listener).not.calledWithMatch({level: 'debug'});
-      expect(listener).not.calledWithMatch({level: 'info'});
-      expect(listener).not.calledWithMatch({level: 'warn'});
-      expect(listener).calledOnce.calledWithMatch({level: 'error'});
+      expect(handler).calledOnce.calledWithMatch({level: 'error'});
+    });
+
+    it('should add listener with filter', () => {
+      const handler = sinon.spy();
+      const filter = (logMessage: TLogMessage) => {
+        return (
+          logMessage.moduleName === 'infestor@salt03' &&
+          logMessage.level === 'info'
+        );
+      };
+      const listener = zerg.createListener({
+        handler,
+        filter,
+        levels: ['error'],
+      });
+      logger.addListener(listener);
+
+      logger.module('infestor@salt01').verbose('some string');
+      logger.module('infestor@salt02').debug('some string');
+      logger.module('infestor@salt03').info('some string');
+      logger.module('infestor@salt02').warn('some string');
+      logger.module('infestor@salt01').error('some string');
+
+      expect(handler).calledOnce.calledWithMatch({
+        level: 'info',
+        moduleName: 'infestor@salt03',
+      });
     });
   });
 
   describe('logger.removelistener', function () {
     it('should delete listeners', function () {
-      const listener = sinon.spy();
+      const handler = sinon.spy();
+      const listener = zerg.createListener({handler, levels: ['error']});
 
       logger.addListener(listener);
       logger.removeListener(listener);
       logger.module('temp').info('im here');
-      expect(listener).not.called;
+      expect(handler).not.called;
     });
 
     it('should not throw when delete listeners', function () {
-      const listener = sinon.spy();
+      const handler = sinon.spy();
+      const listener = zerg.createListener({handler});
+
       logger.addListener(listener);
       expect(function () {
         logger.removeListener(listener);
@@ -110,7 +140,9 @@ describe('Zerg', function () {
     });
 
     it('should not throw when delete NOT existing listeners', function () {
-      logger.removeListener(() => {});
+      const handler = sinon.spy();
+      const listener = zerg.createListener({handler, levels: ['error']});
+      logger.removeListener(listener);
     });
   });
 
@@ -119,8 +151,11 @@ describe('Zerg', function () {
       const t1 = sinon.spy();
       const t2 = sinon.spy();
 
-      logger.addListener(t1);
-      logger.addListener(t2);
+      const listener1 = zerg.createListener({handler: t1});
+      const listener2 = zerg.createListener({handler: t2});
+
+      logger.addListener(listener1);
+      logger.addListener(listener2);
       logger.removeAllListeners();
 
       logger.module('temp1').info('some message');

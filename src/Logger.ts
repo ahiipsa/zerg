@@ -1,14 +1,9 @@
 import LoggerModule from './LoggerModule';
-import {
-  TListenerItem,
-  TLogLevels,
-  TLogMessage,
-  TListener,
-  TExtendedData,
-} from './types';
+import LogListener from './LogListener';
+import {TLogLevel, TLogMessage, TExtendedData} from './types';
 
 class Logger {
-  private __listeners: TListenerItem[] = [];
+  private __listeners: LogListener[] = [];
   private __modules: Record<string, LoggerModule> = {};
 
   module(moduleName: string) {
@@ -34,17 +29,12 @@ class Logger {
     this.__modules[module.name] = module;
   }
 
-  addListener(callback: TListener, levels: TLogLevels[] = []) {
-    this.__listeners.push({
-      callback,
-      levels,
-    });
+  addListener(listener: LogListener) {
+    this.__listeners.push(listener);
   }
 
-  removeListener(callback: TListener) {
-    this.__listeners = this.__listeners.filter(
-      (listener) => listener.callback !== callback
-    );
+  removeListener(listener: LogListener) {
+    this.__listeners = this.__listeners.filter((item) => item !== listener);
   }
 
   removeAllListeners() {
@@ -53,23 +43,13 @@ class Logger {
 
   __emit = (logMessage: TLogMessage) => {
     this.__listeners.forEach((listener) => {
-      if (listener.levels.length === 0) {
-        listener.callback(logMessage);
-        return;
-      }
-
-      if (listener.levels.indexOf(logMessage.level) > -1) {
-        listener.callback(logMessage);
-        return;
-      }
-
-      return;
+      listener.notify(logMessage);
     });
   };
 
   __log = (
     moduleName: string,
-    level: TLogLevels,
+    level: TLogLevel,
     message: string,
     extendedData?: TExtendedData
   ) => {
