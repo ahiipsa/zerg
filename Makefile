@@ -1,14 +1,10 @@
 NPM_BIN=./node_modules/.bin
 LINT_SPEC= *.js ./src ./test ./benchmark ./example
-TEST_SPEC=-S --ui bdd --timeout 5000 --recursive test/ --colors --reporter spec
-
-.PHONY: lint
-lint:
-	@$(NPM_BIN)/eslint --fix $(LINT_SPEC)
+TEST_SPEC=-r ts-node/register -S --ui bdd --timeout 5000 --recursive test/**/*.spec.ts --colors --reporter spec
 
 .PHONY: test
 test:
-	yarn test
+	@$(NPM_BIN)/mocha $(TEST_SPEC)
 
 .PHONY: test-ci
 test-ci:
