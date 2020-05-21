@@ -1,5 +1,5 @@
 NPM_BIN=./node_modules/.bin
-LINT_SPEC= *.ts ./src ./test ./benchmark ./example
+LINT_SPEC='./src/**/*.ts'
 TEST_SPEC=-r ts-node/register -S --ui bdd --timeout 5000 --recursive test/**/*.spec.ts --colors --reporter spec
 
 .PHONY: lint
