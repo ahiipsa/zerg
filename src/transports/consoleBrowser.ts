@@ -1,6 +1,8 @@
 import {TLogMessage} from '../types';
 
 export function consoleBrowser(logObject: TLogMessage) {
-  const messageString = `[${logObject.moduleName}] ${logObject.message}`;
-  console.log(messageString, logObject.extendedData);
+  const prefix =
+    logObject.loggerName.length > 0 ? `[${logObject.loggerName}]` : '';
+  const message = `${prefix}[${logObject.moduleName}] ${logObject.message}`;
+  console.log(message, logObject.extendedData);
 }

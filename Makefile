@@ -4,7 +4,8 @@ TEST_SPEC=-r ts-node/register -S --ui bdd --timeout 5000 --recursive test/**/*.s
 
 
 .PHONY: build
-	npm run buid
+build:
+	npm run build
 
 .PHONY: lint
 lint:

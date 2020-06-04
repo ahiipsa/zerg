@@ -11,10 +11,11 @@ const styles = {
 };
 
 export function consoleBrowserColorful(logObject: TLogMessage) {
-  const messageString =
-    '%c[' + logObject.moduleName + ']%c ' + logObject.message;
+  const prefix =
+    logObject.loggerName.length > 0 ? `[${logObject.loggerName}]` : '';
+  const message = `${prefix}%c[${logObject.moduleName}]%c ${logObject.message}`;
   console.log(
-    messageString,
+    message,
     styles[logObject.level],
     styles.reset,
     logObject.extendedData

@@ -68,6 +68,7 @@ describe('Zerg', function () {
         e: {foo: 'bar'},
       });
       expect(handler).calledOnce.calledWithMatch({
+        loggerName: '',
         moduleName: 'overseer',
         level: 'info',
         message: 'some message',

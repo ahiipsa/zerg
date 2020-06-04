@@ -1,10 +1,15 @@
 import LoggerModule from './LoggerModule';
 import LogListener from './LogListener';
-import {TLogLevel, TLogMessage, TExtendedData} from './types';
+import {TLogLevel, TLogMessage, TExtendedData, TLogFunction} from './types';
 
 class Logger {
+  public name: string = '';
   private __listeners: LogListener[] = [];
   private __modules: Record<string, LoggerModule> = {};
+
+  constructor(name = '') {
+    this.name = name;
+  }
 
   module(moduleName: string) {
     let module = this.getModule(moduleName);
@@ -53,7 +58,8 @@ class Logger {
     message: string,
     extendedData?: TExtendedData
   ) => {
-    const logMessage = {
+    const logMessage: TLogMessage = {
+      loggerName: this.name,
       timestamp: Date.now(),
       level: level,
       moduleName: moduleName,

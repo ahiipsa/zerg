@@ -19,6 +19,7 @@ chai.use(sinonChai);
 
 const getLogMessage = (): TLogMessage => {
   return {
+    loggerName: '',
     timestamp: Date.now(),
     moduleName: 'myModule',
     message: 'some message',

@@ -42,7 +42,9 @@ const map = {
 
 export function consoleNodeColorful(logObject: TLogMessage) {
   const style = map[logObject.level];
-  const message =
-    style('[' + logObject.moduleName + ']') + ' ' + logObject.message;
+  const prefix =
+    logObject.loggerName.length > 0 ? `[${logObject.loggerName}]` : '';
+  const moduleName = style(`[${logObject.moduleName}]`);
+  const message = `${prefix}${moduleName} ${logObject.message}`;
   console.log(message, logObject.extendedData);
 }
