@@ -1,3 +1,23 @@
+## 2.1.0
+
+Added logger name
+
+```
+const logger = zerg.createLogger("My lib or My App");
+```
+
+```
+type TLogMessage = {
+  timestamp: number;
++ loggerName: string;
+  moduleName: string;
+  level: TLogLevel;
+  message: string;
+  extendedData?: TExtendedData;
+};
+
+```
+
 ## 2.0.0
 
 Migration:

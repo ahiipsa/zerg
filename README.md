@@ -78,6 +78,7 @@ type TExtendedData = Record<string, any>;
 ```
 type TLogMessage = {
   timestamp: number;
+  loggerName: string;
   moduleName: string;
   level: TLogLevel;
   message: string;

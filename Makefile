@@ -13,10 +13,12 @@ lint:
 
 .PHONY: test
 test:
+	make build
 	@$(NPM_BIN)/mocha $(TEST_SPEC)
 
 .PHONY: test-ci
 test-ci:
+	make build
 	@rm -rf ./coverage && $(NPM_BIN)/istanbul cover $(NPM_BIN)/_mocha --report lcovonly -- $(TEST_SPEC)
 
 .PHONY: coverage
