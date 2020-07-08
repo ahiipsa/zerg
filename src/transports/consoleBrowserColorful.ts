@@ -14,10 +14,12 @@ export function consoleBrowserColorful(logObject: TLogMessage) {
   const prefix =
     logObject.loggerName.length > 0 ? `[${logObject.loggerName}]` : '';
   const message = `${prefix}%c[${logObject.moduleName}]%c ${logObject.message}`;
-  console.log(
+
+  const args = [
     message,
     styles[logObject.level],
     styles.reset,
-    logObject.extendedData
-  );
+    logObject.extendedData,
+  ].filter(Boolean);
+  console.log(...args);
 }

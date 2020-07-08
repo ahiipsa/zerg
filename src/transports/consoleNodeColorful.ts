@@ -46,5 +46,7 @@ export function consoleNodeColorful(logObject: TLogMessage) {
     logObject.loggerName.length > 0 ? `[${logObject.loggerName}]` : '';
   const moduleName = style(`[${logObject.moduleName}]`);
   const message = `${prefix}${moduleName} ${logObject.message}`;
-  console.log(message, logObject.extendedData);
+
+  const args = [message, logObject.extendedData].filter(Boolean);
+  console.log(...args);
 }
