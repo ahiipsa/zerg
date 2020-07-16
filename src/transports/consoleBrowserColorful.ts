@@ -7,6 +7,8 @@ const styles = {
   info: 'color: green; font-weight: bold;',
   error: 'color: red; font-weight: bold;',
   warn: 'color: orange; font-weight: bold;',
+  metric: 'color: gray; font-weight: bold;',
+  event: 'color: gray; font-weight: bold;',
   reset: 'color: inherit; font-weight: inherit;',
 };
 

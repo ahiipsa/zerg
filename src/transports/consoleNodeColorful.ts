@@ -38,6 +38,8 @@ const map = {
   error: styles.red,
   info: styles.green,
   warn: styles.yellow,
+  metric: styles.gray,
+  event: styles.gray,
 };
 
 export function consoleNodeColorful(logObject: TLogMessage) {

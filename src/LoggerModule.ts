@@ -28,6 +28,12 @@ class LoggerModule {
   error(message: string, extendedData?: TExtendedData) {
     this.log('error', message, extendedData);
   }
+  metric(message: string, extendedData?: TExtendedData) {
+    this.log('metric', message, extendedData);
+  }
+  event(message: string, extendedData?: TExtendedData) {
+    this.log('event', message, extendedData);
+  }
 }
 
 export default LoggerModule;

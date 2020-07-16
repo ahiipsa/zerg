@@ -36,6 +36,8 @@ describe('Zerg', function () {
       expect(log.info).to.be.a('function');
       expect(log.warn).to.be.a('function');
       expect(log.error).to.be.a('function');
+      expect(log.metric).to.be.a('function');
+      expect(log.event).to.be.a('function');
       expect(log.name).to.equal('myModule');
     });
 

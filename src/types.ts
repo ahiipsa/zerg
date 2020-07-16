@@ -1,4 +1,11 @@
-export type TLogLevel = 'verbose' | 'debug' | 'info' | 'warn' | 'error';
+export type TLogLevel =
+  | 'verbose'
+  | 'debug'
+  | 'info'
+  | 'warn'
+  | 'error'
+  | 'metric'
+  | 'event';
 
 export type TExtendedData = Record<string, any>;
 
